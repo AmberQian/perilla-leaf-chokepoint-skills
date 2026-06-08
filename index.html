@@ -1,0 +1,1756 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>紫苏叶选股工作台</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #18212b;
+      --muted: #64707d;
+      --line: #d9e0e7;
+      --panel: #ffffff;
+      --soft: #f4f7fa;
+      --accent: #0f766e;
+      --accent-strong: #0b5f59;
+      --amber: #b45309;
+      --red: #b42318;
+      --blue: #1d4ed8;
+      --green-soft: #e0f5f1;
+      --amber-soft: #fff1d6;
+      --red-soft: #fee4e2;
+      --blue-soft: #e8efff;
+      --shadow: 0 12px 28px rgba(24, 33, 43, 0.08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background: #edf2f5;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      min-height: 36px;
+      padding: 0 11px;
+      cursor: pointer;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    button.ghost {
+      background: transparent;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 18px 22px;
+      background: #10272d;
+      color: #fff;
+      border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 26px;
+      line-height: 1.15;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 6px 0 0;
+      color: rgba(255,255,255,0.78);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .method-strip {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      padding: 12px 14px 0;
+    }
+
+    .method-step {
+      position: relative;
+      min-height: 88px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 12px;
+    }
+
+    .method-step::before {
+      content: attr(data-step);
+      position: absolute;
+      right: 10px;
+      top: 4px;
+      color: rgba(15, 118, 110, 0.12);
+      font-size: 42px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .method-step strong {
+      display: block;
+      position: relative;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .method-step span {
+      display: block;
+      position: relative;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 320px minmax(520px, 1fr) 360px;
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      min-width: 0;
+    }
+
+    .panel-head {
+      padding: 14px 15px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    .panel-body {
+      padding: 14px;
+    }
+
+    .stack {
+      display: grid;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #fff;
+      color: var(--ink);
+      min-height: 38px;
+      padding: 8px 10px;
+      outline: none;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 84px;
+      line-height: 1.45;
+    }
+
+    .segmented {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .segmented button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .candidate-list {
+      display: grid;
+      gap: 8px;
+      max-height: 590px;
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .candidate {
+      display: grid;
+      gap: 8px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+      text-align: left;
+    }
+
+    .candidate.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--green-soft);
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .ticker {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .ticker strong {
+      font-size: 16px;
+    }
+
+    .ticker span {
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .score-pill {
+      min-width: 52px;
+      text-align: center;
+      border-radius: 999px;
+      padding: 4px 8px;
+      font-weight: 800;
+      font-size: 13px;
+      color: var(--accent-strong);
+      background: var(--green-soft);
+    }
+
+    .mini {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      background: var(--soft);
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .chip.green {
+      color: var(--accent-strong);
+      background: var(--green-soft);
+    }
+
+    .chip.amber {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .chip.red {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .main-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .score-card {
+      display: grid;
+      place-items: center;
+      min-height: 182px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+    }
+
+    .score-circle {
+      width: 132px;
+      height: 132px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent) calc(var(--score) * 1%), #dfe7eb 0);
+      position: relative;
+    }
+
+    .score-circle::after {
+      content: "";
+      position: absolute;
+      width: 98px;
+      height: 98px;
+      border-radius: 50%;
+      background: #fbfcfd;
+    }
+
+    .score-number {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      justify-items: center;
+      line-height: 1;
+    }
+
+    .score-number strong {
+      font-size: 36px;
+    }
+
+    .score-number span {
+      margin-top: 7px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 14px;
+    }
+
+    .radar-wrap {
+      min-height: 286px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: radial-gradient(circle at 50% 45%, #ffffff 0, #ffffff 42%, #f6faf9 100%);
+      position: relative;
+    }
+
+    #radarCanvas {
+      width: 260px;
+      height: 260px;
+    }
+
+    .radar-caption {
+      position: absolute;
+      left: 12px;
+      bottom: 10px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .matrix {
+      min-height: 286px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 12px;
+    }
+
+    .matrix-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .matrix-plane {
+      position: relative;
+      min-height: 214px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, transparent calc(50% - 1px), #cfd8df calc(50% - 1px), #cfd8df calc(50% + 1px), transparent calc(50% + 1px)),
+        linear-gradient(0deg, transparent calc(50% - 1px), #cfd8df calc(50% - 1px), #cfd8df calc(50% + 1px), transparent calc(50% + 1px)),
+        linear-gradient(135deg, rgba(15,118,110,0.12), rgba(180,83,9,0.08));
+    }
+
+    .quadrant {
+      position: absolute;
+      color: rgba(24, 33, 43, 0.48);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .q1 { right: 12px; top: 10px; }
+    .q2 { left: 12px; top: 10px; }
+    .q3 { left: 12px; bottom: 10px; }
+    .q4 { right: 12px; bottom: 10px; }
+
+    .matrix-dot {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 7px rgba(15,118,110,0.18);
+      transform: translate(-50%, -50%);
+    }
+
+    .matrix-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      left: 22px;
+      top: -8px;
+      white-space: nowrap;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .axis-x,
+    .axis-y {
+      position: absolute;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .axis-x {
+      right: 10px;
+      bottom: -20px;
+    }
+
+    .axis-y {
+      left: -35px;
+      top: 8px;
+      writing-mode: vertical-rl;
+    }
+
+    .thesis {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .thesis h3 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .thesis p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .kpi {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 9px;
+      background: var(--soft);
+    }
+
+    .kpi strong {
+      display: block;
+      font-size: 14px;
+    }
+
+    .kpi span {
+      display: block;
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .map {
+      position: relative;
+      min-height: 210px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(15,118,110,0.08) 1px, transparent 1px),
+        linear-gradient(rgba(15,118,110,0.08) 1px, transparent 1px),
+        #fbfcfd;
+      background-size: 32px 32px;
+      padding: 18px;
+    }
+
+    .map-flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 10px;
+      align-items: center;
+      height: 100%;
+    }
+
+    .node {
+      min-height: 112px;
+      display: grid;
+      align-content: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+      position: relative;
+    }
+
+    .node:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -11px;
+      top: 50%;
+      width: 11px;
+      height: 2px;
+      background: var(--accent);
+    }
+
+    .node strong {
+      font-size: 14px;
+    }
+
+    .node span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .node.hot {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--green-soft);
+    }
+
+    .rubric {
+      display: grid;
+      gap: 10px;
+    }
+
+    .rubric-row {
+      display: grid;
+      grid-template-columns: 142px 1fr 42px;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .bar {
+      height: 9px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #dfe7eb;
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      width: calc(var(--value) * 10%);
+      background: var(--accent);
+    }
+
+    .rubric-row label {
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .rubric-row output {
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      padding: 10px 10px 0;
+      border-bottom: 1px solid var(--line);
+      background: #fff;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .tabs button {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .tabs button.active {
+      color: #fff;
+      background: var(--accent);
+      border-color: var(--accent);
+      font-weight: 700;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .table th,
+    .table td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 8px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.45;
+    }
+
+    .table th {
+      color: var(--muted);
+      font-size: 12px;
+      background: #fbfcfd;
+    }
+
+    .right-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .guide-card {
+      background:
+        linear-gradient(135deg, rgba(15,118,110,0.10), rgba(29,78,216,0.08)),
+        #fff;
+    }
+
+    .guide-steps {
+      display: grid;
+      gap: 9px;
+      counter-reset: guide;
+    }
+
+    .guide-step {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      gap: 9px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .guide-step::before {
+      counter-increment: guide;
+      content: counter(guide);
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--accent);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .next-actions {
+      display: grid;
+      gap: 8px;
+    }
+
+    .action {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+    }
+
+    .action strong {
+      font-size: 13px;
+    }
+
+    .action span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .spark {
+      width: 46px;
+      height: 8px;
+      border-radius: 99px;
+      background: #dfe7eb;
+      overflow: hidden;
+    }
+
+    .spark i {
+      display: block;
+      height: 100%;
+      width: var(--w);
+      background: var(--accent);
+    }
+
+    .checklist {
+      display: grid;
+      gap: 8px;
+    }
+
+    .check {
+      display: grid;
+      grid-template-columns: 18px 1fr;
+      gap: 8px;
+      align-items: start;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .check input {
+      width: 16px;
+      min-height: 16px;
+      margin-top: 2px;
+      accent-color: var(--accent);
+    }
+
+    .risk-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .risk {
+      padding: 10px;
+      border-radius: 7px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .risk strong {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .risk span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .prompt-box {
+      min-height: 130px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .notice {
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--amber);
+      border-radius: 7px;
+      background: #fffaf0;
+      color: #7a4a08;
+      padding: 10px;
+      line-height: 1.5;
+      font-size: 12px;
+    }
+
+    .tour {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      place-items: center;
+      padding: 20px;
+      background: rgba(8, 22, 27, 0.58);
+    }
+
+    .tour.open {
+      display: grid;
+    }
+
+    .tour-card {
+      width: min(780px, 100%);
+      max-height: min(760px, 92vh);
+      overflow: auto;
+      border-radius: 10px;
+      background: #fff;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.28);
+      border: 1px solid var(--line);
+    }
+
+    .tour-hero {
+      padding: 24px;
+      color: #fff;
+      background:
+        linear-gradient(135deg, rgba(16,39,45,0.95), rgba(15,118,110,0.86)),
+        repeating-linear-gradient(45deg, transparent, transparent 18px, rgba(255,255,255,0.08) 18px, rgba(255,255,255,0.08) 20px);
+    }
+
+    .tour-hero h2 {
+      margin: 0;
+      font-size: 28px;
+      letter-spacing: 0;
+    }
+
+    .tour-hero p {
+      margin: 10px 0 0;
+      color: rgba(255,255,255,0.82);
+      line-height: 1.55;
+    }
+
+    .tour-body {
+      padding: 20px 24px 24px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .tour-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .tour-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fbfcfd;
+    }
+
+    .tour-item strong {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+
+    .tour-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .tour-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 1180px) {
+      .layout {
+        grid-template-columns: 300px 1fr;
+      }
+
+      .right-stack {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 820px) {
+      .topbar,
+      .method-strip,
+      .layout,
+      .scoreboard,
+      .right-stack,
+      .visual-grid,
+      .tour-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .map-flow {
+        grid-template-columns: 1fr;
+      }
+
+      .node:not(:last-child)::after {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1>紫苏叶选股工作台</h1>
+        <p>从下游资本开支反推供应链，寻找小市场、高集中、难替代、能卡住大规模 AI 建设的上游咽喉。当前为可操作原型，示例数据用于演示研究流程。</p>
+      </div>
+      <div class="top-actions">
+        <button id="tourBtn" class="ghost">新手引导</button>
+        <button id="resetBtn" class="ghost">重置评分</button>
+        <button id="briefBtn" class="primary">生成研究指令</button>
+      </div>
+    </header>
+
+    <section class="method-strip" aria-label="紫苏叶方法论流程">
+      <div class="method-step" data-step="01">
+        <strong>主题入池</strong>
+        <span>从 AI capex、CPO、HBM、功率、电网、机器人等主题开始。</span>
+      </div>
+      <div class="method-step" data-step="02">
+        <strong>供应链反推</strong>
+        <span>从下游系统一路拆到材料、设备、良率和认证节点。</span>
+      </div>
+      <div class="method-step" data-step="03">
+        <strong>咽喉评分</strong>
+        <span>看集中度、替代难度、产能、价值捕获和证据质量。</span>
+      </div>
+      <div class="method-step" data-step="04">
+        <strong>证据核验</strong>
+        <span>区分已证实、推断、未核验，先找缺口再讲故事。</span>
+      </div>
+      <div class="method-step" data-step="05">
+        <strong>反方监控</strong>
+        <span>跟踪稀释、多供、路线替代和催化剂兑现。</span>
+      </div>
+    </section>
+
+    <main class="layout">
+      <aside class="panel">
+        <div class="panel-head">
+          <h2>候选池</h2>
+          <span class="chip green" id="poolCount">0 个标的</span>
+        </div>
+        <div class="panel-body stack">
+          <div class="field">
+            <label for="query">搜索股票 / 组件 / 主题</label>
+            <input id="query" type="search" placeholder="例如 AXTI、CPO、HBM、功率器件">
+          </div>
+          <div class="field">
+            <label>主题筛选</label>
+            <div class="segmented" id="themeFilters"></div>
+          </div>
+          <div class="candidate-list" id="candidateList"></div>
+        </div>
+      </aside>
+
+      <section class="main-grid">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>咽喉判定</h2>
+            <div class="chips" id="headlineTags"></div>
+          </div>
+          <div class="panel-body">
+            <div class="scoreboard">
+              <div class="score-card">
+                <div class="score-circle" id="scoreCircle" style="--score: 0">
+                  <div class="score-number">
+                    <strong id="scoreNumber">0</strong>
+                    <span>咽喉分</span>
+                  </div>
+                </div>
+              </div>
+              <div class="thesis">
+                <h3 id="selectedTitle">选择一个候选标的</h3>
+                <p id="selectedThesis">选择左侧标的后，这里会展示紫苏叶式核心 thesis：它在供应链哪里，为什么可能卡住下游，以及哪些证据还缺。</p>
+                <div class="kpi-grid">
+                  <div class="kpi"><strong id="kpiNode">-</strong><span>上游节点</span></div>
+                  <div class="kpi"><strong id="kpiDemand">-</strong><span>需求拉动</span></div>
+                  <div class="kpi"><strong id="kpiEvidence">-</strong><span>证据等级</span></div>
+                  <div class="kpi"><strong id="kpiDilution">-</strong><span>稀释风险</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="visual-grid">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>咽喉雷达</h2>
+              <span class="mini">结构强度一眼看</span>
+            </div>
+            <div class="panel-body">
+              <div class="radar-wrap">
+                <canvas id="radarCanvas" width="260" height="260"></canvas>
+                <span class="radar-caption">越接近外圈，越像结构性咽喉</span>
+              </div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <h2>机会矩阵</h2>
+              <span class="mini">结构强度 × 证据确定性</span>
+            </div>
+            <div class="panel-body">
+              <div class="matrix">
+                <div class="matrix-title">
+                  <span>左下：噪声</span>
+                  <span>右上：优先深挖</span>
+                </div>
+                <div class="matrix-plane">
+                  <span class="axis-y">证据确定性</span>
+                  <span class="axis-x">结构强度</span>
+                  <span class="quadrant q1">优先深挖</span>
+                  <span class="quadrant q2">证据强但弹性弱</span>
+                  <span class="quadrant q3">先放弃</span>
+                  <span class="quadrant q4">高弹性线索</span>
+                  <span class="matrix-dot" id="matrixDot" data-label="AXTI"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>供应链反推图</h2>
+            <span class="mini">从下游 capex 到上游窄节点</span>
+          </div>
+          <div class="panel-body">
+            <div class="map">
+              <div class="map-flow" id="supplyMap"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <h2>评分拆解</h2>
+            <span class="mini">可手动调整，模拟不同判断</span>
+          </div>
+          <div class="panel-body">
+            <div class="rubric" id="rubric"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="tabs" id="tabs">
+            <button class="active" data-tab="evidence">证据</button>
+            <button data-tab="catalyst">催化剂</button>
+            <button data-tab="watch">监控</button>
+          </div>
+          <div class="panel-body" id="tabPanel"></div>
+        </div>
+      </section>
+
+      <aside class="right-stack">
+        <section class="panel guide-card">
+          <div class="panel-head">
+            <h2>新手怎么用</h2>
+            <button id="tourBtnSide">展开</button>
+          </div>
+          <div class="panel-body">
+            <div class="guide-steps">
+              <div class="guide-step">先在左侧选一个主题或标的，不要急着看涨跌。</div>
+              <div class="guide-step">看中间供应链图，确认它到底卡在哪一层。</div>
+              <div class="guide-step">用雷达图和滑杆判断结构强度，低分项就是研究缺口。</div>
+              <div class="guide-step">去证据页检查来源，再看反方压力测试。</div>
+              <div class="guide-step">复制研究指令，让 AI 或研究员继续拉公告和论文。</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>紫苏叶过滤器</h2>
+            <span class="chip amber" id="gateScore">0/7</span>
+          </div>
+          <div class="panel-body stack">
+            <div class="checklist" id="gateList"></div>
+            <div class="notice">通过过滤器不代表可以买入；它只说明这个标的值得进入更深一层证据核验。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>反方压力测试</h2>
+            <span class="mini">先找失败路径</span>
+          </div>
+          <div class="panel-body">
+            <div class="risk-list" id="riskList"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>研究指令</h2>
+            <button id="copyBtn">复制</button>
+          </div>
+          <div class="panel-body stack">
+            <textarea id="promptBox" class="prompt-box" readonly></textarea>
+            <div class="notice">把这段指令交给 AI 或研究员，就能按同一框架继续拉公告、财报、论文和行业报告。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>下一步动作</h2>
+            <span class="mini">按缺口推进</span>
+          </div>
+          <div class="panel-body">
+            <div class="next-actions" id="nextActions"></div>
+          </div>
+        </section>
+      </aside>
+    </main>
+  </div>
+
+  <div class="tour" id="tour">
+    <div class="tour-card">
+      <div class="tour-hero">
+        <h2>第一次使用：按这 5 步走</h2>
+        <p>紫苏叶理论不是“看谁涨得快”，而是先判断一个公司是否站在难替代的供应链窄节点上，再用证据和反方压力测试决定值不值得深挖。</p>
+      </div>
+      <div class="tour-body">
+        <div class="tour-grid">
+          <div class="tour-item"><strong>1. 选主题</strong><span>从 CPO、HBM、先进封装、功率器件等 AI 基建主题里挑候选。</span></div>
+          <div class="tour-item"><strong>2. 看链条</strong><span>供应链图会告诉你它离下游 capex 有多近，以及卡在哪个节点。</span></div>
+          <div class="tour-item"><strong>3. 看雷达</strong><span>雷达图越饱满，说明结构特征越强；凹进去的地方就是要补证据的地方。</span></div>
+          <div class="tour-item"><strong>4. 看矩阵</strong><span>右上角优先深挖；右下角是高弹性线索但证据不足；左下角先放弃。</span></div>
+          <div class="tour-item"><strong>5. 复制指令</strong><span>把研究指令交给 AI，继续拉公告、财报、论文、行业报告和反方证据。</span></div>
+          <div class="tour-item"><strong>6. 不做自动交易</strong><span>这只是研究工作台，不输出买卖建议，也不替代人工判断。</span></div>
+        </div>
+        <div class="tour-actions">
+          <button id="closeTour" class="primary">开始使用</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const weights = {
+      upstream: 15,
+      concentration: 15,
+      substitution: 15,
+      capacity: 10,
+      capture: 10,
+      demand: 10,
+      evidence: 10,
+      dilution: 10,
+      timing: 5
+    };
+
+    const labels = {
+      upstream: "上游杠杆",
+      concentration: "供应集中度",
+      substitution: "替代难度",
+      capacity: "产能稀缺",
+      capture: "价值捕获",
+      demand: "需求拉动",
+      evidence: "证据质量",
+      dilution: "资本结构",
+      timing: "催化时间"
+    };
+
+    const candidates = [
+      {
+        ticker: "AXTI",
+        name: "AXT Inc.",
+        theme: "光子 / CPO",
+        node: "InP 衬底",
+        demand: "硅光子、CPO、激光器、LiDAR",
+        evidenceGrade: "中",
+        dilutionRisk: "中",
+        tags: ["材料", "小盘", "认证周期"],
+        thesis: "如果 AI 集群网络转向更高带宽光互连，InP 衬底可能成为上游材料咽喉。关键在于客户认证、可扩产良率、与替代材料路线的竞争。",
+        map: ["云厂商 AI capex", "高速交换 / CPO", "激光器与光模块", "InP 外延 / 晶圆", "AXTI 衬底产能"],
+        scores: { upstream: 8, concentration: 8, substitution: 7, capacity: 7, capture: 6, demand: 8, evidence: 6, dilution: 5, timing: 6 },
+        evidence: [
+          ["InP 用于高速光通信器件", "技术论文 / 公司材料", "中", "需要确认具体客户和量产节奏"],
+          ["市场供应集中度较高", "行业报告线索", "中", "需核验精确市占和可替代供应商"],
+          ["下游 AI 光互连需求增长", "云厂商 capex 与网络架构", "中", "需求传导到该公司仍需证据"]
+        ],
+        catalysts: [
+          ["0-3 个月", "财报中提到订单、产能利用率或客户认证进展"],
+          ["3-12 个月", "CPO / ELS 设计赢单与光模块放量信号"],
+          ["2027+", "高速光互连规模部署进入材料端供需紧张"]
+        ],
+        watch: ["S-3 / ATM / 增发文件", "客户认证或长期供货协议", "InP 产能扩张 capex", "CPO 量产时间线"],
+        risks: [
+          ["替代路线", "硅光子、薄膜铌酸锂或其他材料路线降低 InP 依赖。"],
+          ["多供策略", "客户为了降低供应风险快速扶持第二供应商。"],
+          ["资本开支错配", "公司先稀释扩产，但需求兑现慢于预期。"]
+        ]
+      },
+      {
+        ticker: "SIVE",
+        name: "Sivers Semiconductors",
+        theme: "光子 / CPO",
+        node: "CW 激光器 / 光源",
+        demand: "CPO、外置激光源、AI 集群互连",
+        evidenceGrade: "中低",
+        dilutionRisk: "高",
+        tags: ["光源", "高波动", "客户认证"],
+        thesis: "CW 光源若成为 CPO 架构中的关键依赖，小型供应商可能因参考设计和客户认证形成短期咽喉。核心风险是证据链、融资需求和大厂自研。",
+        map: ["AI 集群互连", "CPO / 外置光源架构", "参考设计", "CW 激光器", "SIVE 光源能力"],
+        scores: { upstream: 8, concentration: 7, substitution: 8, capacity: 6, capture: 6, demand: 8, evidence: 4, dilution: 3, timing: 7 },
+        evidence: [
+          ["CPO 需要稳定光源方案", "技术路线与行业材料", "中", "具体 sole-source 关系需核验"],
+          ["公司具备光子与无线业务", "公司公告", "中", "需要区分产品能力和量产收入"],
+          ["市场叙事热度高", "社交与社区线索", "低", "不能替代客户确认"]
+        ],
+        catalysts: [
+          ["0-3 个月", "融资结构、订单更新、合作伙伴公告"],
+          ["3-12 个月", "CPO 客户认证或量产前导收入"],
+          ["2027+", "AI 数据中心光源规模部署"]
+        ],
+        watch: ["融资公告", "客户或设计伙伴名字", "毛利率变化", "现金跑道"],
+        risks: [
+          ["证据不足", "叙事强于公告，客户关系可能被市场过度推断。"],
+          ["坏稀释", "若需求未兑现前频繁融资，股东回报被吞噬。"],
+          ["大厂内部化", "核心客户或平台厂商可能内置光源路线。"]
+        ]
+      },
+      {
+        ticker: "CAMT",
+        name: "Camtek",
+        theme: "先进封装",
+        node: "检测 / 量测",
+        demand: "HBM、Chiplet、先进封装良率",
+        evidenceGrade: "中高",
+        dilutionRisk: "低",
+        tags: ["设备", "良率", "封装"],
+        thesis: "先进封装越复杂，检测和量测越接近良率咽喉。该类设备不一定是最小公司，但能通过工艺复杂度捕获持续需求。",
+        map: ["AI 加速器需求", "HBM / Chiplet 封装", "良率控制", "检测量测设备", "CAMT 工具"],
+        scores: { upstream: 7, concentration: 7, substitution: 7, capacity: 6, capture: 7, demand: 8, evidence: 7, dilution: 8, timing: 7 },
+        evidence: [
+          ["先进封装提高检测需求", "行业趋势 / 公司材料", "中高", "需要比较竞品份额"],
+          ["HBM 和 Chiplet capex 增长", "半导体设备周期", "中", "周期性仍存在"],
+          ["财务结构相对稳健", "财报", "中", "需更新最新数据"]
+        ],
+        catalysts: [
+          ["0-3 个月", "订单和 backlog 更新"],
+          ["3-12 个月", "HBM / CoWoS / OSAT 扩产节奏"],
+          ["2027+", "先进封装成为 AI 算力扩展主路径"]
+        ],
+        watch: ["订单能见度", "毛利率", "客户集中度", "先进封装 capex"],
+        risks: [
+          ["周期回落", "设备订单受半导体 capex 周期影响。"],
+          ["竞争加剧", "KLAC 等大厂在检测量测端竞争。"],
+          ["估值先行", "好公司不等于好买点。"]
+        ]
+      },
+      {
+        ticker: "MU",
+        name: "Micron",
+        theme: "HBM / 存储",
+        node: "HBM 供给",
+        demand: "AI GPU、ASIC、服务器内存",
+        evidenceGrade: "高",
+        dilutionRisk: "低",
+        tags: ["HBM", "存储周期", "大盘"],
+        thesis: "AI 将存储周期从传统库存周期推向结构性供给约束。MU 不是小型咽喉，但 HBM 供给和定价权可能成为 AI capex 的关键中游瓶颈。",
+        map: ["AI 加速器需求", "HBM 容量", "DRAM 制程 / 封装", "合格供应", "MU HBM 产能"],
+        scores: { upstream: 7, concentration: 8, substitution: 7, capacity: 8, capture: 8, demand: 9, evidence: 8, dilution: 8, timing: 8 },
+        evidence: [
+          ["HBM 需求由 AI 加速器拉动", "财报 / 行业数据", "高", "需持续跟踪供给增速"],
+          ["HBM 供应商集中", "行业格局", "高", "三星、海力士竞争格局变化"],
+          ["存储定价改善", "财务数据", "中高", "仍受周期波动影响"]
+        ],
+        catalysts: [
+          ["0-3 个月", "HBM 指引、ASP、毛利率"],
+          ["3-12 个月", "客户资格认证与产能扩张"],
+          ["2027+", "AI 内存强度持续提高"]
+        ],
+        watch: ["HBM 收入占比", "存储 ASP", "capex 指引", "竞争对手产能"],
+        risks: [
+          ["供给过度扩张", "存储行业历史上容易从短缺转向过剩。"],
+          ["技术落后", "HBM 代际节奏输给竞争对手。"],
+          ["宏观周期", "服务器需求或资本开支放缓。"]
+        ]
+      },
+      {
+        ticker: "COHR",
+        name: "Coherent",
+        theme: "光子 / CPO",
+        node: "光模块 / 光器件纵深",
+        demand: "AI 网络、光模块、激光器",
+        evidenceGrade: "中高",
+        dilutionRisk: "中",
+        tags: ["光器件", "纵向整合", "规模供应"],
+        thesis: "COHR 属于“什么都做”的光子基础设施供应商，可能不是最窄节点，但具备多环节捕获光互连周期的能力。",
+        map: ["AI 网络升级", "高速光模块", "激光器 / 调制器", "材料与器件", "COHR 纵向能力"],
+        scores: { upstream: 6, concentration: 6, substitution: 6, capacity: 7, capture: 7, demand: 8, evidence: 7, dilution: 6, timing: 7 },
+        evidence: [
+          ["光器件组合覆盖广", "公司材料", "高", "需拆分具体产品线"],
+          ["AI 网络带宽需求上升", "行业趋势", "高", "竞争格局复杂"],
+          ["规模公司捕获周期", "财务和订单", "中", "不是最纯咽喉"]
+        ],
+        catalysts: [
+          ["0-3 个月", "AI 光模块收入与订单"],
+          ["3-12 个月", "800G / 1.6T 升级节奏"],
+          ["2027+", "CPO 规模化部署"]
+        ],
+        watch: ["产品线拆分", "毛利率", "债务结构", "客户集中度"],
+        risks: [
+          ["不够窄", "业务太宽，咽喉溢价可能被稀释。"],
+          ["价格竞争", "光模块和器件可能快速商品化。"],
+          ["资产负债表", "整合与债务影响估值弹性。"]
+        ]
+      },
+      {
+        ticker: "NVTS",
+        name: "Navitas",
+        theme: "功率 / 电力",
+        node: "GaN 功率器件",
+        demand: "800VDC、数据中心电源、机器人",
+        evidenceGrade: "中",
+        dilutionRisk: "中高",
+        tags: ["GaN", "电源", "高 beta"],
+        thesis: "AI 数据中心电力密度提升可能把功率半导体推成新瓶颈。GaN 的机会在高频高效，但要证明数据中心路线和收入兑现。",
+        map: ["AI 数据中心电力", "高压直流 / 电源架构", "功率转换", "GaN 器件", "NVTS"],
+        scores: { upstream: 7, concentration: 5, substitution: 6, capacity: 6, capture: 6, demand: 7, evidence: 5, dilution: 4, timing: 6 },
+        evidence: [
+          ["功率密度需求上升", "数据中心趋势", "中", "GaN 与 SiC / Si 的分工需核验"],
+          ["公司聚焦 GaN", "公司材料", "中", "量产客户和规模收入仍需追踪"],
+          ["高波动小盘", "市场结构", "中", "融资风险不低"]
+        ],
+        catalysts: [
+          ["0-3 个月", "数据中心客户进展"],
+          ["3-12 个月", "800VDC 相关设计赢单"],
+          ["2027+", "AI 电力架构升级扩大功率器件需求"]
+        ],
+        watch: ["现金跑道", "设计赢单转收入", "数据中心产品认证", "毛利率"],
+        risks: [
+          ["路线竞争", "SiC、硅 MOSFET 或模块化电源路线分流。"],
+          ["收入兑现慢", "设计赢单不等于规模出货。"],
+          ["稀释压力", "小盘扩产和研发需要资金。"]
+        ]
+      }
+    ];
+
+    const gates = [
+      "小上游市场能影响大下游资本开支",
+      "合格供应商少或认证周期长",
+      "替代需要重新设计或重新认证",
+      "需求由 AI capex / 架构升级拉动",
+      "公司有机会捕获定价权或经营杠杆",
+      "证据能被公告、论文或行业资料支持",
+      "稀释结构没有直接吞噬 thesis"
+    ];
+
+    let selectedIndex = 0;
+    let activeTheme = "全部";
+    let activeTab = "evidence";
+    let currentScores = { ...candidates[0].scores };
+
+    const els = {
+      poolCount: document.getElementById("poolCount"),
+      query: document.getElementById("query"),
+      themeFilters: document.getElementById("themeFilters"),
+      candidateList: document.getElementById("candidateList"),
+      headlineTags: document.getElementById("headlineTags"),
+      radarCanvas: document.getElementById("radarCanvas"),
+      matrixDot: document.getElementById("matrixDot"),
+      scoreCircle: document.getElementById("scoreCircle"),
+      scoreNumber: document.getElementById("scoreNumber"),
+      selectedTitle: document.getElementById("selectedTitle"),
+      selectedThesis: document.getElementById("selectedThesis"),
+      kpiNode: document.getElementById("kpiNode"),
+      kpiDemand: document.getElementById("kpiDemand"),
+      kpiEvidence: document.getElementById("kpiEvidence"),
+      kpiDilution: document.getElementById("kpiDilution"),
+      supplyMap: document.getElementById("supplyMap"),
+      rubric: document.getElementById("rubric"),
+      tabPanel: document.getElementById("tabPanel"),
+      gateList: document.getElementById("gateList"),
+      gateScore: document.getElementById("gateScore"),
+      riskList: document.getElementById("riskList"),
+      promptBox: document.getElementById("promptBox"),
+      nextActions: document.getElementById("nextActions"),
+      tour: document.getElementById("tour")
+    };
+
+    function weightedScore(scores) {
+      const total = Object.entries(weights).reduce((sum, [key, weight]) => sum + scores[key] * weight, 0);
+      return Math.round(total / 10);
+    }
+
+    function band(score) {
+      if (score >= 80) return ["强咽喉", "green"];
+      if (score >= 65) return ["候选咽喉", "amber"];
+      if (score >= 50) return ["观察名单", "amber"];
+      return ["弱咽喉", "red"];
+    }
+
+    function filteredCandidates() {
+      const q = els.query.value.trim().toLowerCase();
+      return candidates.filter(item => {
+        const themeOk = activeTheme === "全部" || item.theme === activeTheme;
+        const text = `${item.ticker} ${item.name} ${item.theme} ${item.node} ${item.demand} ${item.tags.join(" ")}`.toLowerCase();
+        return themeOk && text.includes(q);
+      });
+    }
+
+    function renderThemes() {
+      const themes = ["全部", ...Array.from(new Set(candidates.map(item => item.theme)))];
+      els.themeFilters.innerHTML = themes.map(theme => `<button class="${theme === activeTheme ? "active" : ""}" data-theme="${theme}">${theme}</button>`).join("");
+      els.themeFilters.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", () => {
+          activeTheme = button.dataset.theme;
+          renderCandidates();
+        });
+      });
+    }
+
+    function renderCandidates() {
+      const list = filteredCandidates();
+      els.poolCount.textContent = `${list.length} 个标的`;
+      els.candidateList.innerHTML = list.map(item => {
+        const idx = candidates.indexOf(item);
+        const score = weightedScore(item.scores);
+        const [label, color] = band(score);
+        return `
+          <button class="candidate ${idx === selectedIndex ? "active" : ""}" data-index="${idx}">
+            <div class="row">
+              <div class="ticker"><strong>${item.ticker}</strong><span>${item.name}</span></div>
+              <span class="score-pill">${score}</span>
+            </div>
+            <div class="chips">
+              <span class="chip green">${item.theme}</span>
+              <span class="chip ${color}">${label}</span>
+              <span class="chip">${item.node}</span>
+            </div>
+            <div class="mini">${item.thesis}</div>
+          </button>
+        `;
+      }).join("");
+      els.candidateList.querySelectorAll(".candidate").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedIndex = Number(button.dataset.index);
+          currentScores = { ...candidates[selectedIndex].scores };
+          renderAll();
+        });
+      });
+    }
+
+    function renderSelected() {
+      const item = candidates[selectedIndex];
+      const score = weightedScore(currentScores);
+      const [label, color] = band(score);
+      els.scoreCircle.style.setProperty("--score", score);
+      els.scoreNumber.textContent = score;
+      els.selectedTitle.textContent = `${item.ticker} · ${item.node}`;
+      els.selectedThesis.textContent = item.thesis;
+      els.kpiNode.textContent = item.node;
+      els.kpiDemand.textContent = item.demand;
+      els.kpiEvidence.textContent = item.evidenceGrade;
+      els.kpiDilution.textContent = item.dilutionRisk;
+      els.headlineTags.innerHTML = `
+        <span class="chip green">${item.theme}</span>
+        <span class="chip ${color}">${label}</span>
+        ${item.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}
+      `;
+    }
+
+    function drawRadar() {
+      const canvas = els.radarCanvas;
+      const ctx = canvas.getContext("2d");
+      const size = canvas.width;
+      const cx = size / 2;
+      const cy = size / 2;
+      const radius = 92;
+      const keys = ["upstream", "concentration", "substitution", "capacity", "capture", "demand", "evidence", "dilution", "timing"];
+      ctx.clearRect(0, 0, size, size);
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = "#d9e0e7";
+      ctx.fillStyle = "#64707d";
+      ctx.font = "11px system-ui, sans-serif";
+      for (let ring = 1; ring <= 4; ring += 1) {
+        ctx.beginPath();
+        keys.forEach((key, idx) => {
+          const angle = -Math.PI / 2 + idx * Math.PI * 2 / keys.length;
+          const r = radius * ring / 4;
+          const x = cx + Math.cos(angle) * r;
+          const y = cy + Math.sin(angle) * r;
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.stroke();
+      }
+      keys.forEach((key, idx) => {
+        const angle = -Math.PI / 2 + idx * Math.PI * 2 / keys.length;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + Math.cos(angle) * radius, cy + Math.sin(angle) * radius);
+        ctx.stroke();
+        const labelRadius = radius + 22;
+        const lx = cx + Math.cos(angle) * labelRadius;
+        const ly = cy + Math.sin(angle) * labelRadius;
+        ctx.textAlign = lx < cx - 10 ? "right" : lx > cx + 10 ? "left" : "center";
+        ctx.fillText(labels[key].slice(0, 4), lx, ly + 4);
+      });
+      ctx.beginPath();
+      keys.forEach((key, idx) => {
+        const angle = -Math.PI / 2 + idx * Math.PI * 2 / keys.length;
+        const r = radius * currentScores[key] / 10;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      });
+      ctx.closePath();
+      ctx.fillStyle = "rgba(15, 118, 110, 0.28)";
+      ctx.strokeStyle = "#0f766e";
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+      keys.forEach((key, idx) => {
+        const angle = -Math.PI / 2 + idx * Math.PI * 2 / keys.length;
+        const r = radius * currentScores[key] / 10;
+        const x = cx + Math.cos(angle) * r;
+        const y = cy + Math.sin(angle) * r;
+        ctx.beginPath();
+        ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = "#0b5f59";
+        ctx.fill();
+      });
+    }
+
+    function renderMatrix() {
+      const item = candidates[selectedIndex];
+      const structure = (currentScores.upstream + currentScores.concentration + currentScores.substitution + currentScores.capacity + currentScores.demand) / 5;
+      const certainty = (currentScores.evidence + currentScores.dilution + currentScores.timing) / 3;
+      const x = Math.max(8, Math.min(92, structure * 10));
+      const y = Math.max(8, Math.min(92, 100 - certainty * 10));
+      els.matrixDot.style.left = `${x}%`;
+      els.matrixDot.style.top = `${y}%`;
+      els.matrixDot.dataset.label = item.ticker;
+    }
+
+    function renderMap() {
+      const item = candidates[selectedIndex];
+      els.supplyMap.innerHTML = item.map.map((node, idx) => `
+        <div class="node ${idx === item.map.length - 1 ? "hot" : ""}">
+          <strong>${idx + 1}. ${node}</strong>
+          <span>${idx === 0 ? "需求起点" : idx === item.map.length - 1 ? "待验证咽喉" : "传导环节"}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderRubric() {
+      els.rubric.innerHTML = Object.keys(weights).map(key => `
+        <div class="rubric-row">
+          <label for="score-${key}">${labels[key]}</label>
+          <input id="score-${key}" type="range" min="0" max="10" step="1" value="${currentScores[key]}" data-key="${key}">
+          <output>${currentScores[key]}</output>
+        </div>
+        <div class="rubric-row" aria-hidden="true">
+          <span></span>
+          <div class="bar" style="--value:${currentScores[key]}"><span></span></div>
+          <span></span>
+        </div>
+      `).join("");
+      els.rubric.querySelectorAll("input[type=range]").forEach(input => {
+        input.addEventListener("input", () => {
+          currentScores[input.dataset.key] = Number(input.value);
+          renderSelected();
+          drawRadar();
+          renderMatrix();
+          renderGates();
+          renderNextActions();
+          renderPrompt();
+          input.parentElement.querySelector("output").textContent = input.value;
+          input.parentElement.nextElementSibling.querySelector(".bar").style.setProperty("--value", input.value);
+        });
+      });
+    }
+
+    function renderTabs() {
+      document.querySelectorAll("#tabs button").forEach(button => {
+        button.classList.toggle("active", button.dataset.tab === activeTab);
+      });
+      const item = candidates[selectedIndex];
+      if (activeTab === "evidence") {
+        els.tabPanel.innerHTML = `
+          <table class="table">
+            <thead><tr><th>主张</th><th>来源类型</th><th>置信度</th><th>缺口</th></tr></thead>
+            <tbody>${item.evidence.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td></tr>`).join("")}</tbody>
+          </table>
+        `;
+      } else if (activeTab === "catalyst") {
+        els.tabPanel.innerHTML = `
+          <table class="table">
+            <thead><tr><th>时间窗口</th><th>催化剂</th></tr></thead>
+            <tbody>${item.catalysts.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`).join("")}</tbody>
+          </table>
+        `;
+      } else {
+        els.tabPanel.innerHTML = `
+          <div class="checklist">
+            ${item.watch.map(text => `<label class="check"><input type="checkbox"><span>${text}</span></label>`).join("")}
+          </div>
+        `;
+      }
+    }
+
+    function renderGates() {
+      const score = weightedScore(currentScores);
+      const passes = [
+        currentScores.upstream >= 7,
+        currentScores.concentration >= 7,
+        currentScores.substitution >= 7,
+        currentScores.demand >= 7,
+        currentScores.capture >= 6,
+        currentScores.evidence >= 6,
+        currentScores.dilution >= 5
+      ];
+      els.gateScore.textContent = `${passes.filter(Boolean).length}/7`;
+      els.gateList.innerHTML = gates.map((gate, idx) => `
+        <label class="check">
+          <input type="checkbox" ${passes[idx] ? "checked" : ""} disabled>
+          <span>${gate}</span>
+        </label>
+      `).join("");
+    }
+
+    function renderRisks() {
+      const item = candidates[selectedIndex];
+      els.riskList.innerHTML = item.risks.map(risk => `
+        <div class="risk"><strong>${risk[0]}</strong><span>${risk[1]}</span></div>
+      `).join("");
+    }
+
+    function renderNextActions() {
+      const item = candidates[selectedIndex];
+      const lowKeys = Object.keys(currentScores)
+        .sort((a, b) => currentScores[a] - currentScores[b])
+        .slice(0, 3);
+      const actions = lowKeys.map(key => {
+        const actionText = {
+          upstream: "量化下游 capex 到该节点的传导比例",
+          concentration: "确认合格供应商数量和客户认证周期",
+          substitution: "找替代路线、替代材料和重新认证成本",
+          capacity: "核验扩产周期、良率和原材料约束",
+          capture: "检查毛利率、定价权和合同条款",
+          demand: "追踪客户路线图和架构采用节奏",
+          evidence: "补一手公告、论文或行业报告证据",
+          dilution: "检查现金跑道、ATM、shelf 和可转债",
+          timing: "列出 30/90/180 天可验证催化剂"
+        }[key];
+        return [labels[key], actionText, currentScores[key]];
+      });
+      els.nextActions.innerHTML = actions.map(([name, text, value]) => `
+        <div class="action">
+          <div><strong>${name}</strong><span>${text}</span></div>
+          <div class="spark" style="--w:${value * 10}%"><i></i></div>
+        </div>
+      `).join("");
+    }
+
+    function renderPrompt() {
+      const item = candidates[selectedIndex];
+      const score = weightedScore(currentScores);
+      els.promptBox.value = `使用 $perilla-leaf-chokepoint 对 ${item.ticker}（${item.name}）做紫苏叶供应链咽喉分析。\\n\\n当前假设：\\n- 主题：${item.theme}\\n- 候选咽喉：${item.node}\\n- 下游需求：${item.demand}\\n- 初始咽喉分：${score}/100\\n\\n请按以下结构输出：1）供应链反推图；2）咽喉评分拆解；3）证据表，区分已证实、推断、未核验；4）稀释与资本结构；5）催化剂时间线；6）反方压力测试；7）未来 30/90/180 天监控清单。不要给买卖建议，只做研究辅助。`;
+    }
+
+    function renderAll() {
+      renderCandidates();
+      renderSelected();
+      drawRadar();
+      renderMatrix();
+      renderMap();
+      renderRubric();
+      renderTabs();
+      renderGates();
+      renderRisks();
+      renderNextActions();
+      renderPrompt();
+    }
+
+    els.query.addEventListener("input", renderCandidates);
+    document.querySelectorAll("#tabs button").forEach(button => {
+      button.addEventListener("click", () => {
+        activeTab = button.dataset.tab;
+        renderTabs();
+      });
+    });
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      currentScores = { ...candidates[selectedIndex].scores };
+      renderAll();
+    });
+    document.getElementById("briefBtn").addEventListener("click", renderPrompt);
+    document.getElementById("copyBtn").addEventListener("click", async () => {
+      els.promptBox.select();
+      try {
+        await navigator.clipboard.writeText(els.promptBox.value);
+      } catch {
+        document.execCommand("copy");
+      }
+    });
+    document.getElementById("tourBtn").addEventListener("click", () => els.tour.classList.add("open"));
+    document.getElementById("tourBtnSide").addEventListener("click", () => els.tour.classList.add("open"));
+    document.getElementById("closeTour").addEventListener("click", () => els.tour.classList.remove("open"));
+    els.tour.addEventListener("click", event => {
+      if (event.target === els.tour) els.tour.classList.remove("open");
+    });
+
+    renderThemes();
+    renderAll();
+  </script>
+</body>
+</html>
