@@ -1,42 +1,64 @@
-# 紫苏叶供应链咽喉分析技能
+# Perilla Leaf Chokepoint Research
 
-这是一个面向 AI 基础设施、半导体与先进制造供应链研究的本地 AI 技能项目。它把“紫苏叶理论 / 咽喉理论”的研究方式整理成可复用的技能、评分表、报告模板和产品预览页。
+一个用于研究 AI 基础设施与半导体供应链咽喉节点的工作台。
 
-核心目标不是追逐最显眼的“卖铲人”，而是沿着 AI 资本开支和硬件架构反向拆解供应链，寻找那些市场规模不大、却能限制下游巨大投入推进的上游窄节点。
+项目关注的问题很具体：当 AI 数据中心、CPO、HBM、先进封装、功率器件和机器人等方向继续扩张时，哪些上游环节虽然市场规模不大，却可能因为供应集中、认证周期长、替代困难或产能受限，影响更大规模的下游资本开支。
 
-本项目仅用于研究辅助，不构成投资建议。
+这里的“紫苏叶”不是一个选股口号，而是一套研究方法：从下游需求反向拆解供应链，寻找真正的窄节点，再用证据、资本结构和反方路径反复校验。
 
-## 项目内容
+本仓库仅用于产业与投资研究辅助，不构成任何投资建议。
 
-| 路径 | 用途 |
-|---|---|
-| `SKILL.md` | 主技能说明，告诉 AI 如何执行紫苏叶式咽喉分析。 |
-| `references/scoring-rubric.md` | 0-100 分咽喉评分规则。 |
-| `references/report-template.md` | 完整分析备忘录模板。 |
-| `references/source-hygiene.md` | 资料校验、防幻觉和证据分级规则。 |
-| `references/ecosystem-radar.md` | 20 个相关开源项目与可借鉴技能。 |
-| `data/ecosystem.json` | 机器可读的生态项目清单。 |
-| `scripts/create_analysis_brief.py` | 一键生成 Markdown 分析草稿。 |
-| `product/index.html` | 本地可看的紫苏叶选股工作台原型。 |
+## 在线工作台
 
-## 快速开始
+GitHub Pages:
 
-生成一个空白分析草稿：
+https://amberqian.github.io/perilla-leaf-chokepoint-skills/
+
+工作台目前支持：
+
+- 候选标的池与主题筛选
+- 供应链反推图
+- 咽喉评分与雷达图
+- 结构强度 / 证据确定性矩阵
+- 证据、催化剂、监控清单管理
+- 自定义标的录入
+- 研究备注与本地保存
+- Markdown 研究备忘录导出
+
+## 研究框架
+
+一个候选节点进入研究池前，至少需要回答七个问题：
+
+1. 它是否处在足够上游的位置？
+2. 它是否用相对小的市场影响更大的下游资本开支？
+3. 合格供应商是否有限，客户认证周期是否较长？
+4. 替代是否需要重新设计、重新认证或重建产能？
+5. 需求是否由明确的架构升级或资本开支拉动？
+6. 公司是否有机会捕获定价权、经营杠杆或产能稀缺价值？
+7. 证据是否足够硬，资本结构是否不会直接吞噬 thesis？
+
+评分不是买卖信号，只是研究优先级。高分代表值得进一步核验，低分代表结构、证据或时间线还不够清晰。
+
+## 仓库结构
+
+| 路径 | 说明 |
+| --- | --- |
+| `index.html` | GitHub Pages 首页，也是完整的研究工作台。 |
+| `product/index.html` | 与首页同步的本地产品页。 |
+| `SKILL.md` | 供应链咽喉分析 playbook，可供支持 Skill 的研究环境调用。 |
+| `references/scoring-rubric.md` | 0-100 分评分标准。 |
+| `references/report-template.md` | 研究备忘录模板。 |
+| `references/source-hygiene.md` | 资料核验、证据分级和防误判规则。 |
+| `references/ecosystem-radar.md` | 相关开源项目和可借鉴组件清单。 |
+| `data/ecosystem.json` | 生态项目的结构化索引。 |
+| `scripts/create_analysis_brief.py` | 生成 Markdown 研究草稿的命令行脚本。 |
+
+## 本地使用
+
+启动静态页面：
 
 ```bash
-python3 scripts/create_analysis_brief.py AXTI --output-dir reports
-```
-
-在 AI 里调用本技能：
-
-```text
-使用 $perilla-leaf-chokepoint 分析 AXTI 是否构成 InP 衬底供应链咽喉。
-```
-
-本地预览产品页：
-
-```bash
-python3 -m http.server 4173 --directory product
+python3 -m http.server 4173
 ```
 
 然后打开：
@@ -45,51 +67,34 @@ python3 -m http.server 4173 --directory product
 http://127.0.0.1:4173
 ```
 
-## 推荐研究流程
-
-1. 输入股票代码、公司、组件、材料或 AI 基础设施主题。
-2. 从下游需求和资本开支开始，反向拆解系统架构与物料链。
-3. 找出最窄的上游节点。
-4. 用 `references/scoring-rubric.md` 打分。
-5. 用 `references/source-hygiene.md` 校验证据。
-6. 用 `references/report-template.md` 输出研究备忘录。
-7. 在做任何投资判断前，先完成反方压力测试。
-
-## 产品原型
-
-`product/index.html` 不是项目目录页，而是一个可操作的选股工作台：
-
-- 左侧：候选池、主题筛选、搜索。
-- 顶部：紫苏叶方法论 5 步流程，新手能先理解怎么用。
-- 中间：咽喉总分、雷达图、机会矩阵、供应链反推图、可调评分拆解、证据 / 催化剂 / 监控标签页。
-- 右侧：新手引导、紫苏叶过滤器、反方压力测试、下一步动作、可复制研究指令。
-
-当前候选池使用示例数据，目的是跑通方法论产品化流程。后续可接入 SEC 公告、财报电话会、新闻、技术论文、行业报告和 Serenity 提及档案。
-
-## 部署
-
-仓库已经准备好 GitHub Pages 自动部署：
-
-- 根目录 `index.html` 会自动跳转到 `product/index.html`。
-- `.github/workflows/deploy-pages.yml` 会在推送到 `main` 后发布静态页面。
-- `.nojekyll` 会避免 GitHub Pages 对静态文件做 Jekyll 处理。
-
-如果本机已安装并登录 GitHub CLI，可在仓库目录运行：
+生成空白研究草稿：
 
 ```bash
-gh repo create perilla-leaf-chokepoint-skills --public --source . --push
+python3 scripts/create_analysis_brief.py AXTI --output-dir reports
 ```
 
-推送后，在 GitHub 仓库的 `Settings → Pages` 中确认 Source 为 `GitHub Actions`。工作流跑完后，仓库首页会显示 Pages 网址。
+## 推荐工作流
 
-## 推荐仓库名
+1. 选择一个主题、公司、组件或材料。
+2. 从下游需求开始，反向拆解系统架构、BOM、制造流程和供应商层级。
+3. 标出最可能成为限制因素的上游节点。
+4. 按评分表给出初始分数。
+5. 把所有证据分成已证实、合理推断和未核验。
+6. 写出反方路径：替代路线、多供、时间线推迟、稀释、客户自研、估值透支。
+7. 导出研究备忘录，并用新公告、财报和行业资料持续更新。
 
-```text
-perilla-leaf-chokepoint-skills
-```
+## 使用边界
 
-这个名字强调“紫苏叶 + 供应链咽喉 + AI 技能”，同时避免冒充 Serenity / @aleabitoreddit 本人。
+这个项目适合做研究拆解、证据整理和备忘录管理，不适合直接用于自动交易。
 
-## 许可协议
+尤其需要注意：
 
-MIT。
+- 小盘半导体和 AI 基建链标的波动很大。
+- 合作公告不等于量产订单。
+- 供应链传言必须回到一手来源核验。
+- “好稀释”和“坏稀释”要分开判断。
+- 技术路线变化可能快速削弱一个看似稀缺的节点。
+
+## License
+
+MIT
