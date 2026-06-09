@@ -94,6 +94,24 @@
       gap: 8px;
       flex-wrap: wrap;
       justify-content: flex-end;
+      min-width: 0;
+      max-width: 100%;
+    }
+
+    .top-actions button {
+      color: #fff;
+      white-space: nowrap;
+      flex: 0 1 auto;
+    }
+
+    .top-actions button.ghost {
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.72);
+    }
+
+    .top-actions button.ghost:hover {
+      background: rgba(255,255,255,0.14);
+      border-color: #fff;
     }
 
     .method-strip {
@@ -928,6 +946,19 @@
 
       .kpi-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+
+      .topbar {
+        align-items: start;
+      }
+
+      .top-actions {
+        justify-content: flex-start;
+        width: 100%;
+      }
+
+      .top-actions button {
+        flex: 1 1 142px;
       }
 
       .map-flow {
