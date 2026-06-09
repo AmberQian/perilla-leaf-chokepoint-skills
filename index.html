@@ -160,7 +160,7 @@
 
     .layout {
       display: grid;
-      grid-template-columns: 320px minmax(520px, 1fr) 360px;
+      grid-template-columns: minmax(280px, 320px) minmax(0, 1fr) minmax(300px, 360px);
       gap: 14px;
       padding: 14px;
     }
@@ -266,6 +266,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      flex-wrap: wrap;
     }
 
     .ticker {
@@ -675,8 +676,13 @@
 
     .table {
       width: 100%;
+      min-width: 640px;
       border-collapse: collapse;
       font-size: 13px;
+    }
+
+    #tabPanel {
+      overflow-x: auto;
     }
 
     .table th,
@@ -1093,6 +1099,15 @@
 
       .topbar {
         align-items: start;
+        padding: 16px;
+      }
+
+      .brand h1 {
+        font-size: 24px;
+      }
+
+      .brand p {
+        font-size: 12px;
       }
 
       .top-actions {
@@ -1110,6 +1125,120 @@
 
       .node:not(:last-child)::after {
         display: none;
+      }
+
+      .layout,
+      .method-strip {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .panel-head {
+        align-items: flex-start;
+        flex-wrap: wrap;
+      }
+
+      .candidate-list,
+      .brief-list,
+      .brief-view {
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+      }
+
+      .map {
+        min-height: 0;
+        overflow: visible;
+        padding: 12px;
+      }
+
+      .map-flow {
+        height: auto;
+      }
+
+      .node {
+        min-height: 88px;
+      }
+
+      .score-card {
+        min-height: 156px;
+      }
+
+      .matrix-title {
+        flex-wrap: wrap;
+      }
+
+      .axis-y {
+        left: 8px;
+        top: 36px;
+      }
+
+      .axis-x {
+        right: 8px;
+        bottom: 8px;
+      }
+
+      .rubric-row {
+        grid-template-columns: 92px 1fr 30px;
+        gap: 7px;
+      }
+
+      .brief-card {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .top-actions button,
+      .button-row button {
+        flex: 1 1 100%;
+      }
+
+      .form-grid,
+      .evidence-form,
+      .workspace-meta,
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-body {
+        padding: 12px;
+      }
+
+      .method-step {
+        min-height: 74px;
+      }
+
+      .method-step::before {
+        font-size: 36px;
+      }
+
+      .score-circle {
+        width: 116px;
+        height: 116px;
+      }
+
+      .score-circle::after {
+        width: 86px;
+        height: 86px;
+      }
+
+      .score-number strong {
+        font-size: 30px;
+      }
+
+      #radarCanvas {
+        width: 230px;
+        height: 230px;
+      }
+
+      .radar-wrap,
+      .matrix {
+        min-height: 250px;
+      }
+
+      .matrix-plane {
+        min-height: 190px;
       }
     }
   </style>
