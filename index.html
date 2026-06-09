@@ -45,6 +45,7 @@
       min-height: 36px;
       padding: 0 11px;
       cursor: pointer;
+      line-height: 1.2;
     }
 
     button.primary {
@@ -61,7 +62,7 @@
     .app {
       min-height: 100vh;
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto auto minmax(0, 1fr);
     }
 
     .topbar {
@@ -123,7 +124,7 @@
 
     .method-step {
       position: relative;
-      min-height: 88px;
+      min-height: 78px;
       overflow: hidden;
       border: 1px solid var(--line);
       border-radius: 8px;
@@ -163,6 +164,46 @@
       grid-template-columns: minmax(280px, 320px) minmax(0, 1fr) minmax(300px, 360px);
       gap: 14px;
       padding: 14px;
+      align-items: start;
+    }
+
+    @media (min-width: 1181px) {
+      .app {
+        height: 100vh;
+        overflow: hidden;
+      }
+
+      .layout {
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .layout > .panel,
+      .main-grid,
+      .right-stack {
+        max-height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-gutter: stable;
+        padding-bottom: 2px;
+      }
+
+      .layout > .panel::-webkit-scrollbar,
+      .main-grid::-webkit-scrollbar,
+      .right-stack::-webkit-scrollbar,
+      .brief-list::-webkit-scrollbar,
+      .brief-view::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .layout > .panel::-webkit-scrollbar-thumb,
+      .main-grid::-webkit-scrollbar-thumb,
+      .right-stack::-webkit-scrollbar-thumb,
+      .brief-list::-webkit-scrollbar-thumb,
+      .brief-view::-webkit-scrollbar-thumb {
+        background: #c7d2da;
+        border-radius: 99px;
+      }
     }
 
     .panel {
@@ -180,12 +221,14 @@
       gap: 10px;
       align-items: center;
       justify-content: space-between;
+      min-width: 0;
     }
 
     .panel-head h2 {
       margin: 0;
       font-size: 15px;
       letter-spacing: 0;
+      min-width: 0;
     }
 
     .panel-body {
@@ -210,6 +253,7 @@
 
     input, select, textarea {
       width: 100%;
+      min-width: 0;
       border: 1px solid var(--line);
       border-radius: 6px;
       background: #fff;
@@ -241,8 +285,8 @@
     .candidate-list {
       display: grid;
       gap: 8px;
-      max-height: 460px;
-      overflow: auto;
+      max-height: none;
+      overflow: visible;
       padding-right: 3px;
     }
 
@@ -321,6 +365,7 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
+      line-height: 1.2;
     }
 
     .chip.green {
@@ -341,19 +386,20 @@
     .main-grid {
       display: grid;
       gap: 14px;
+      align-content: start;
     }
 
     .scoreboard {
       display: grid;
       grid-template-columns: 180px 1fr;
       gap: 14px;
-      align-items: stretch;
+      align-items: start;
     }
 
     .score-card {
       display: grid;
       place-items: center;
-      min-height: 182px;
+      min-height: 176px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: #fbfcfd;
@@ -400,10 +446,11 @@
       display: grid;
       grid-template-columns: 300px 1fr;
       gap: 14px;
+      align-items: start;
     }
 
     .radar-wrap {
-      min-height: 286px;
+      min-height: 274px;
       display: grid;
       place-items: center;
       border: 1px solid var(--line);
@@ -426,7 +473,7 @@
     }
 
     .matrix {
-      min-height: 286px;
+      min-height: 274px;
       border: 1px solid var(--line);
       border-radius: 8px;
       background: #fbfcfd;
@@ -558,8 +605,8 @@
 
     .map {
       position: relative;
-      min-height: 210px;
-      overflow: hidden;
+      min-height: 0;
+      overflow: visible;
       border: 1px solid var(--line);
       border-radius: 8px;
       background:
@@ -575,17 +622,17 @@
       grid-template-columns: repeat(5, 1fr);
       gap: 10px;
       align-items: center;
-      height: 100%;
+      height: auto;
     }
 
     .node {
-      min-height: 112px;
+      min-height: 96px;
       display: grid;
       align-content: center;
       gap: 8px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 12px;
+      padding: 11px;
       background: #fff;
       position: relative;
     }
@@ -601,7 +648,8 @@
     }
 
     .node strong {
-      font-size: 14px;
+      font-size: 13px;
+      line-height: 1.35;
     }
 
     .node span {
@@ -617,33 +665,21 @@
 
     .rubric {
       display: grid;
-      gap: 10px;
+      gap: 12px;
     }
 
     .rubric-row {
       display: grid;
-      grid-template-columns: 142px 1fr 42px;
-      gap: 10px;
+      grid-template-columns: 128px minmax(180px, 1fr) 34px;
+      gap: 12px;
       align-items: center;
-    }
-
-    .bar {
-      height: 9px;
-      border-radius: 999px;
-      overflow: hidden;
-      background: #dfe7eb;
-    }
-
-    .bar span {
-      display: block;
-      height: 100%;
-      width: calc(var(--value) * 10%);
-      background: var(--accent);
+      min-height: 28px;
     }
 
     .rubric-row label {
       color: var(--ink);
       font-size: 12px;
+      font-weight: 800;
     }
 
     .rubric-row output {
@@ -703,6 +739,7 @@
     .right-stack {
       display: grid;
       gap: 14px;
+      align-content: start;
     }
 
     .guide-card {
@@ -888,6 +925,7 @@
       color: var(--accent-strong);
       font-size: 12px;
       font-weight: 700;
+      line-height: 1.45;
     }
 
     .workspace-meta {
@@ -897,7 +935,11 @@
     }
 
     .workspace-meta .kpi {
-      min-height: 70px;
+      min-height: 58px;
+    }
+
+    #researchNote {
+      min-height: 112px;
     }
 
     .evidence-form {
@@ -924,21 +966,30 @@
 
     .brief-list {
       display: grid;
-      gap: 8px;
-      max-height: 360px;
-      overflow: auto;
+      gap: 6px;
+      max-height: none;
+      overflow: visible;
       padding-right: 3px;
     }
 
     .brief-card {
       display: grid;
-      gap: 7px;
+      grid-template-columns: minmax(0, 1fr) 54px;
+      grid-template-areas:
+        "title score"
+        "meta score"
+        "summary summary";
+      align-items: center;
+      gap: 6px 12px;
       width: 100%;
-      padding: 10px;
+      min-height: 88px;
+      height: auto;
+      padding: 12px;
       text-align: left;
       border: 1px solid var(--line);
       border-radius: 7px;
       background: #fff;
+      overflow: visible;
     }
 
     .brief-card.active {
@@ -947,7 +998,10 @@
     }
 
     .brief-card strong {
+      grid-area: title;
       font-size: 13px;
+      line-height: 1.35;
+      word-break: break-word;
     }
 
     .brief-card span {
@@ -956,27 +1010,48 @@
       line-height: 1.4;
     }
 
+    .brief-card .score-pill {
+      grid-area: score;
+      min-width: 50px;
+      justify-self: end;
+    }
+
+    .brief-card .chips {
+      grid-area: meta;
+    }
+
+    .brief-card .brief-summary {
+      grid-area: summary;
+      color: var(--muted);
+      border-top: 1px solid #edf1f4;
+      padding-top: 6px;
+    }
+
     .brief-view {
       display: grid;
-      gap: 9px;
-      max-height: 340px;
-      overflow: auto;
-      padding: 10px;
+      gap: 12px;
+      max-height: none;
+      overflow: visible;
+      padding: 14px 14px 16px;
       border: 1px solid var(--line);
       border-radius: 7px;
-      background: #fbfcfd;
-      font-size: 12px;
+      background: #fff;
+      font-size: 13px;
       line-height: 1.5;
     }
 
     .brief-view h3 {
       margin: 0;
-      font-size: 15px;
+      font-size: 16px;
+      line-height: 1.25;
     }
 
     .brief-view h4 {
-      margin: 4px 0 0;
+      margin: 6px 0 0;
       font-size: 13px;
+      color: var(--accent-strong);
+      padding-top: 8px;
+      border-top: 1px solid #edf1f4;
     }
 
     .brief-view p,
@@ -986,6 +1061,10 @@
 
     .brief-view ul {
       padding-left: 18px;
+    }
+
+    .brief-view li {
+      margin: 3px 0;
     }
 
     .tour {
@@ -1073,12 +1152,20 @@
 
     @media (max-width: 1180px) {
       .layout {
-        grid-template-columns: 300px 1fr;
+        grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
       }
 
       .right-stack {
         grid-column: 1 / -1;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: 1fr;
+      }
+
+      .candidate-list,
+      .brief-list,
+      .brief-view {
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
       }
     }
 
@@ -2190,11 +2277,6 @@
           <input id="score-${key}" type="range" min="0" max="10" step="1" value="${currentScores[key]}" data-key="${key}">
           <output>${currentScores[key]}</output>
         </div>
-        <div class="rubric-row" aria-hidden="true">
-          <span></span>
-          <div class="bar" style="--value:${currentScores[key]}"><span></span></div>
-          <span></span>
-        </div>
       `).join("");
       els.rubric.querySelectorAll("input[type=range]").forEach(input => {
         input.addEventListener("input", () => {
@@ -2210,7 +2292,6 @@
           renderNextActions();
           renderPrompt();
           input.parentElement.querySelector("output").textContent = input.value;
-          input.parentElement.nextElementSibling.querySelector(".bar").style.setProperty("--value", input.value);
         });
       });
     }
@@ -2413,15 +2494,13 @@ ${memo.next.map(item => `- ${item}`).join("\n")}
       els.briefCount.textContent = `${memoLibrary.length} 篇`;
       els.briefList.innerHTML = memoLibrary.map((memo, idx) => `
         <button class="brief-card ${idx === selectedBriefIndex ? "active" : ""}" data-brief-index="${idx}">
-          <div class="row">
-            <strong>${escapeHtml(memo.ticker)} · ${escapeHtml(memo.title)}</strong>
-            <span class="score-pill">${memo.score}</span>
-          </div>
+          <strong>${escapeHtml(memo.ticker)} · ${escapeHtml(memo.title)}</strong>
+          <span class="score-pill">${memo.score}</span>
           <div class="chips">
             <span class="chip green">${escapeHtml(memo.theme)}</span>
             <span class="chip amber">${escapeHtml(memo.stage)}</span>
           </div>
-          <span>${escapeHtml(memo.conclusion)}</span>
+          <span class="brief-summary">${escapeHtml(memo.conclusion)}</span>
         </button>
       `).join("");
       els.briefList.querySelectorAll(".brief-card").forEach(button => {
