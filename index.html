@@ -241,7 +241,7 @@
     .candidate-list {
       display: grid;
       gap: 8px;
-      max-height: 590px;
+      max-height: 460px;
       overflow: auto;
       padding-right: 3px;
     }
@@ -839,6 +839,83 @@
       font-size: 12px;
     }
 
+    .mini-form {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+    }
+
+    .mini-form summary {
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent-strong);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .form-grid .wide {
+      grid-column: 1 / -1;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .button-row button {
+      flex: 1 1 120px;
+    }
+
+    .status-line {
+      min-height: 18px;
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .workspace-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .workspace-meta .kpi {
+      min-height: 70px;
+    }
+
+    .evidence-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .evidence-form .wide {
+      grid-column: 1 / -1;
+    }
+
+    .saved-mark {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: var(--blue-soft);
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
     .tour {
       position: fixed;
       inset: 0;
@@ -1023,6 +1100,44 @@
             <label>主题筛选</label>
             <div class="segmented" id="themeFilters"></div>
           </div>
+          <details class="mini-form">
+            <summary>录入新标的 / 新瓶颈假设</summary>
+            <div class="form-grid">
+              <div class="field">
+                <label for="newTicker">股票代码</label>
+                <input id="newTicker" placeholder="例如 ACLS">
+              </div>
+              <div class="field">
+                <label for="newName">公司名称</label>
+                <input id="newName" placeholder="公司英文或中文名">
+              </div>
+              <div class="field">
+                <label for="newTheme">主题</label>
+                <input id="newTheme" placeholder="例如 先进封装">
+              </div>
+              <div class="field">
+                <label for="newNode">候选咽喉</label>
+                <input id="newNode" placeholder="例如 离子注入设备">
+              </div>
+              <div class="field wide">
+                <label for="newDemand">下游需求</label>
+                <input id="newDemand" placeholder="它被哪类 AI capex / 架构升级拉动">
+              </div>
+              <div class="field wide">
+                <label for="newThesis">核心假设</label>
+                <textarea id="newThesis" placeholder="一句话说明：它为什么可能卡住下游，最大证据缺口是什么"></textarea>
+              </div>
+              <div class="field wide">
+                <label for="newMap">供应链路径</label>
+                <input id="newMap" placeholder="用 > 分隔，例如 AI capex > HBM > 先进封装 > 检测量测 > 公司">
+              </div>
+            </div>
+            <div class="button-row">
+              <button id="addCandidateBtn" class="primary">加入候选池</button>
+              <button id="clearSavedBtn">清空本地自建</button>
+            </div>
+            <div class="status-line" id="addStatus"></div>
+          </details>
           <div class="candidate-list" id="candidateList"></div>
         </div>
       </aside>
@@ -1178,6 +1293,52 @@
 
         <section class="panel">
           <div class="panel-head">
+            <h2>研究工作区</h2>
+            <span class="saved-mark" id="savedMark">未保存</span>
+          </div>
+          <div class="panel-body stack">
+            <div class="workspace-meta">
+              <div class="kpi"><strong id="workspaceScore">0</strong><span>当前分</span></div>
+              <div class="kpi"><strong id="workspaceGate">0/7</strong><span>过滤器</span></div>
+              <div class="kpi"><strong id="workspaceBand">-</strong><span>阶段</span></div>
+            </div>
+            <div class="field">
+              <label for="researchNote">研究备注</label>
+              <textarea id="researchNote" placeholder="记录你自己的判断、反方疑点、要查的公告、电话会问题等"></textarea>
+            </div>
+            <div class="evidence-form">
+              <div class="field wide">
+                <label for="evidenceClaim">新增证据主张</label>
+                <input id="evidenceClaim" placeholder="例如：某客户路线图指向 2027 年 CPO 放量">
+              </div>
+              <div class="field">
+                <label for="evidenceSource">来源类型</label>
+                <input id="evidenceSource" placeholder="公告 / 财报 / 论文 / 行业报告">
+              </div>
+              <div class="field">
+                <label for="evidenceConfidence">置信度</label>
+                <select id="evidenceConfidence">
+                  <option>中</option>
+                  <option>高</option>
+                  <option>低</option>
+                </select>
+              </div>
+              <div class="field wide">
+                <label for="evidenceGap">仍需核验</label>
+                <input id="evidenceGap" placeholder="还缺什么一手证据">
+              </div>
+            </div>
+            <div class="button-row">
+              <button id="addEvidenceBtn">添加证据</button>
+              <button id="saveSnapshotBtn" class="primary">保存快照</button>
+              <button id="exportBriefBtn">导出备忘录</button>
+            </div>
+            <div class="status-line" id="workspaceStatus"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
             <h2>下一步动作</h2>
             <span class="mini">按缺口推进</span>
           </div>
@@ -1236,7 +1397,24 @@
       timing: "催化时间"
     };
 
-    const candidates = [
+    const STORAGE_KEY = "perillaLeafWorkbench.v1";
+
+    function loadWorkbenchState() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch {
+        return {};
+      }
+    }
+
+    function saveWorkbenchState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        customCandidates,
+        candidateState
+      }));
+    }
+
+    const seedCandidates = [
       {
         ticker: "AXTI",
         name: "AXT Inc.",
@@ -1413,6 +1591,11 @@
       }
     ];
 
+    const savedWorkbench = loadWorkbenchState();
+    let customCandidates = Array.isArray(savedWorkbench.customCandidates) ? savedWorkbench.customCandidates : [];
+    let candidateState = savedWorkbench.candidateState || {};
+    const candidates = [...seedCandidates, ...customCandidates];
+
     const gates = [
       "小上游市场能影响大下游资本开支",
       "合格供应商少或认证周期长",
@@ -1452,8 +1635,70 @@
       riskList: document.getElementById("riskList"),
       promptBox: document.getElementById("promptBox"),
       nextActions: document.getElementById("nextActions"),
-      tour: document.getElementById("tour")
+      tour: document.getElementById("tour"),
+      newTicker: document.getElementById("newTicker"),
+      newName: document.getElementById("newName"),
+      newTheme: document.getElementById("newTheme"),
+      newNode: document.getElementById("newNode"),
+      newDemand: document.getElementById("newDemand"),
+      newThesis: document.getElementById("newThesis"),
+      newMap: document.getElementById("newMap"),
+      addStatus: document.getElementById("addStatus"),
+      savedMark: document.getElementById("savedMark"),
+      workspaceScore: document.getElementById("workspaceScore"),
+      workspaceGate: document.getElementById("workspaceGate"),
+      workspaceBand: document.getElementById("workspaceBand"),
+      researchNote: document.getElementById("researchNote"),
+      evidenceClaim: document.getElementById("evidenceClaim"),
+      evidenceSource: document.getElementById("evidenceSource"),
+      evidenceConfidence: document.getElementById("evidenceConfidence"),
+      evidenceGap: document.getElementById("evidenceGap"),
+      workspaceStatus: document.getElementById("workspaceStatus")
     };
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function candidateKey(item = candidates[selectedIndex]) {
+      return `${item.ticker || "UNKNOWN"}::${item.node || ""}`;
+    }
+
+    function stateFor(item = candidates[selectedIndex]) {
+      const key = candidateKey(item);
+      if (!candidateState[key]) {
+        candidateState[key] = {
+          scores: { ...item.scores },
+          notes: "",
+          extraEvidence: [],
+          savedAt: ""
+        };
+      }
+      return candidateState[key];
+    }
+
+    function activeEvidence(item = candidates[selectedIndex]) {
+      return [...item.evidence, ...(stateFor(item).extraEvidence || [])];
+    }
+
+    function currentGatePasses() {
+      return [
+        currentScores.upstream >= 7,
+        currentScores.concentration >= 7,
+        currentScores.substitution >= 7,
+        currentScores.demand >= 7,
+        currentScores.capture >= 6,
+        currentScores.evidence >= 6,
+        currentScores.dilution >= 5
+      ];
+    }
+
+    currentScores = { ...stateFor(candidates[0]).scores };
 
     function weightedScore(scores) {
       const total = Object.entries(weights).reduce((sum, [key, weight]) => sum + scores[key] * weight, 0);
@@ -1492,27 +1737,28 @@
       els.poolCount.textContent = `${list.length} 个标的`;
       els.candidateList.innerHTML = list.map(item => {
         const idx = candidates.indexOf(item);
-        const score = weightedScore(item.scores);
+        const score = weightedScore(stateFor(item).scores || item.scores);
         const [label, color] = band(score);
         return `
           <button class="candidate ${idx === selectedIndex ? "active" : ""}" data-index="${idx}">
             <div class="row">
-              <div class="ticker"><strong>${item.ticker}</strong><span>${item.name}</span></div>
+              <div class="ticker"><strong>${escapeHtml(item.ticker)}</strong><span>${escapeHtml(item.name)}</span></div>
               <span class="score-pill">${score}</span>
             </div>
             <div class="chips">
-              <span class="chip green">${item.theme}</span>
+              <span class="chip green">${escapeHtml(item.theme)}</span>
               <span class="chip ${color}">${label}</span>
-              <span class="chip">${item.node}</span>
+              <span class="chip">${escapeHtml(item.node)}</span>
+              ${item.custom ? '<span class="chip amber">自建</span>' : ""}
             </div>
-            <div class="mini">${item.thesis}</div>
+            <div class="mini">${escapeHtml(item.thesis)}</div>
           </button>
         `;
       }).join("");
       els.candidateList.querySelectorAll(".candidate").forEach(button => {
         button.addEventListener("click", () => {
           selectedIndex = Number(button.dataset.index);
-          currentScores = { ...candidates[selectedIndex].scores };
+          currentScores = { ...stateFor(candidates[selectedIndex]).scores };
           renderAll();
         });
       });
@@ -1531,9 +1777,9 @@
       els.kpiEvidence.textContent = item.evidenceGrade;
       els.kpiDilution.textContent = item.dilutionRisk;
       els.headlineTags.innerHTML = `
-        <span class="chip green">${item.theme}</span>
+        <span class="chip green">${escapeHtml(item.theme)}</span>
         <span class="chip ${color}">${label}</span>
-        ${item.tags.map(tag => `<span class="chip">${tag}</span>`).join("")}
+        ${item.tags.map(tag => `<span class="chip">${escapeHtml(tag)}</span>`).join("")}
       `;
     }
 
@@ -1617,7 +1863,7 @@
       const item = candidates[selectedIndex];
       els.supplyMap.innerHTML = item.map.map((node, idx) => `
         <div class="node ${idx === item.map.length - 1 ? "hot" : ""}">
-          <strong>${idx + 1}. ${node}</strong>
+          <strong>${idx + 1}. ${escapeHtml(node)}</strong>
           <span>${idx === 0 ? "需求起点" : idx === item.map.length - 1 ? "待验证咽喉" : "传导环节"}</span>
         </div>
       `).join("");
@@ -1639,10 +1885,14 @@
       els.rubric.querySelectorAll("input[type=range]").forEach(input => {
         input.addEventListener("input", () => {
           currentScores[input.dataset.key] = Number(input.value);
+          stateFor().scores = { ...currentScores };
+          stateFor().savedAt = new Date().toLocaleString("zh-CN");
+          saveWorkbenchState();
           renderSelected();
           drawRadar();
           renderMatrix();
           renderGates();
+          renderWorkspace();
           renderNextActions();
           renderPrompt();
           input.parentElement.querySelector("output").textContent = input.value;
@@ -1657,44 +1907,36 @@
       });
       const item = candidates[selectedIndex];
       if (activeTab === "evidence") {
+        const rows = activeEvidence(item);
         els.tabPanel.innerHTML = `
           <table class="table">
             <thead><tr><th>主张</th><th>来源类型</th><th>置信度</th><th>缺口</th></tr></thead>
-            <tbody>${item.evidence.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td><td>${row[3]}</td></tr>`).join("")}</tbody>
+            <tbody>${rows.map(row => `<tr><td>${escapeHtml(row[0])}</td><td>${escapeHtml(row[1])}</td><td>${escapeHtml(row[2])}</td><td>${escapeHtml(row[3])}</td></tr>`).join("")}</tbody>
           </table>
         `;
       } else if (activeTab === "catalyst") {
         els.tabPanel.innerHTML = `
           <table class="table">
             <thead><tr><th>时间窗口</th><th>催化剂</th></tr></thead>
-            <tbody>${item.catalysts.map(row => `<tr><td>${row[0]}</td><td>${row[1]}</td></tr>`).join("")}</tbody>
+            <tbody>${item.catalysts.map(row => `<tr><td>${escapeHtml(row[0])}</td><td>${escapeHtml(row[1])}</td></tr>`).join("")}</tbody>
           </table>
         `;
       } else {
         els.tabPanel.innerHTML = `
           <div class="checklist">
-            ${item.watch.map(text => `<label class="check"><input type="checkbox"><span>${text}</span></label>`).join("")}
+            ${item.watch.map(text => `<label class="check"><input type="checkbox"><span>${escapeHtml(text)}</span></label>`).join("")}
           </div>
         `;
       }
     }
 
     function renderGates() {
-      const score = weightedScore(currentScores);
-      const passes = [
-        currentScores.upstream >= 7,
-        currentScores.concentration >= 7,
-        currentScores.substitution >= 7,
-        currentScores.demand >= 7,
-        currentScores.capture >= 6,
-        currentScores.evidence >= 6,
-        currentScores.dilution >= 5
-      ];
+      const passes = currentGatePasses();
       els.gateScore.textContent = `${passes.filter(Boolean).length}/7`;
       els.gateList.innerHTML = gates.map((gate, idx) => `
         <label class="check">
           <input type="checkbox" ${passes[idx] ? "checked" : ""} disabled>
-          <span>${gate}</span>
+          <span>${escapeHtml(gate)}</span>
         </label>
       `).join("");
     }
@@ -1702,7 +1944,7 @@
     function renderRisks() {
       const item = candidates[selectedIndex];
       els.riskList.innerHTML = item.risks.map(risk => `
-        <div class="risk"><strong>${risk[0]}</strong><span>${risk[1]}</span></div>
+        <div class="risk"><strong>${escapeHtml(risk[0])}</strong><span>${escapeHtml(risk[1])}</span></div>
       `).join("");
     }
 
@@ -1733,6 +1975,144 @@
       `).join("");
     }
 
+    function renderWorkspace() {
+      const item = candidates[selectedIndex];
+      const state = stateFor(item);
+      const score = weightedScore(currentScores);
+      const passes = currentGatePasses();
+      const [label] = band(score);
+      els.workspaceScore.textContent = score;
+      els.workspaceGate.textContent = `${passes.filter(Boolean).length}/7`;
+      els.workspaceBand.textContent = label;
+      els.researchNote.value = state.notes || "";
+      els.savedMark.textContent = state.savedAt ? "已保存" : "未保存";
+      els.workspaceStatus.textContent = state.savedAt ? `最近保存：${state.savedAt}` : "当前标的还没有保存快照。";
+    }
+
+    function markSaved(text = "已自动保存") {
+      els.savedMark.textContent = "已保存";
+      els.workspaceStatus.textContent = text;
+      saveWorkbenchState();
+    }
+
+    function markdownBrief() {
+      const item = candidates[selectedIndex];
+      const score = weightedScore(currentScores);
+      const [label] = band(score);
+      const passes = currentGatePasses();
+      const state = stateFor(item);
+      const scoreRows = Object.keys(weights)
+        .map(key => `| ${labels[key]} | ${currentScores[key]}/10 | ${weights[key]} |`)
+        .join("\n");
+      const evidenceRows = activeEvidence(item)
+        .map(row => `| ${row[0]} | ${row[1]} | ${row[2]} | ${row[3]} |`)
+        .join("\n");
+      const catalystRows = item.catalysts.map(row => `| ${row[0]} | ${row[1]} |`).join("\n");
+      const riskRows = item.risks.map(row => `- **${row[0]}**：${row[1]}`).join("\n");
+      const watchRows = item.watch.map(row => `- ${row}`).join("\n");
+      const gateRows = gates.map((gate, idx) => `- ${passes[idx] ? "[x]" : "[ ]"} ${gate}`).join("\n");
+      return `# ${item.ticker} 紫苏叶咽喉分析备忘录
+
+> 研究辅助，不构成投资建议。
+
+## 一句话结论
+- 公司：${item.name}
+- 主题：${item.theme}
+- 候选咽喉：${item.node}
+- 当前咽喉分：${score}/100（${label}）
+- 下游需求：${item.demand}
+
+${item.thesis}
+
+## 供应链反推
+${item.map.map((node, index) => `${index + 1}. ${node}`).join("\n")}
+
+## 评分拆解
+| 维度 | 分数 | 权重 |
+| --- | ---: | ---: |
+${scoreRows}
+
+## 紫苏叶过滤器
+${gateRows}
+
+## 证据表
+| 主张 | 来源类型 | 置信度 | 缺口 |
+| --- | --- | --- | --- |
+${evidenceRows}
+
+## 催化剂时间线
+| 时间窗口 | 催化剂 |
+| --- | --- |
+${catalystRows}
+
+## 监控清单
+${watchRows}
+
+## 反方压力测试
+${riskRows}
+
+## 我的研究备注
+${state.notes || "暂无。"}
+`;
+    }
+
+    function exportBrief() {
+      const item = candidates[selectedIndex];
+      const blob = new Blob([markdownBrief()], { type: "text/markdown;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${item.ticker || "perilla"}-chokepoint-brief.md`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      markSaved("已导出研究备忘录。");
+    }
+
+    function addCustomCandidate() {
+      const ticker = els.newTicker.value.trim().toUpperCase();
+      const name = els.newName.value.trim() || ticker;
+      const theme = els.newTheme.value.trim() || "自定义主题";
+      const node = els.newNode.value.trim();
+      const demand = els.newDemand.value.trim() || "待补充";
+      const thesis = els.newThesis.value.trim();
+      const map = els.newMap.value.split(">").map(part => part.trim()).filter(Boolean);
+      if (!ticker || !node || !thesis) {
+        els.addStatus.textContent = "请至少填写股票代码、候选咽喉和核心假设。";
+        return;
+      }
+      const item = {
+        ticker,
+        name,
+        theme,
+        node,
+        demand,
+        evidenceGrade: "待核验",
+        dilutionRisk: "待核验",
+        tags: ["自建", "待核验"],
+        thesis,
+        map: map.length >= 2 ? map : ["下游 AI capex", demand, node, ticker],
+        scores: { upstream: 6, concentration: 5, substitution: 5, capacity: 5, capture: 5, demand: 6, evidence: 3, dilution: 5, timing: 5 },
+        evidence: [["核心 thesis 已录入", "用户假设", "低", "需要公告、财报、论文或行业报告核验"]],
+        catalysts: [["0-30 天", "补齐一手证据、财务结构和客户/供应商关系"], ["30-90 天", "跟踪公告、电话会、融资文件和行业会议"], ["90-180 天", "验证需求传导与收入兑现"]],
+        watch: ["最新财报和电话会", "融资 / 稀释文件", "客户认证或设计赢单", "竞品和替代路线"],
+        risks: [["证据不足", "当前只是候选假设，不能把叙事当作事实。"], ["替代路线", "客户可能采用其他材料、架构或供应商。"], ["资本结构", "小盘公司可能用融资换时间。"]],
+        custom: true
+      };
+      customCandidates.push(item);
+      candidates.push(item);
+      stateFor(item);
+      selectedIndex = candidates.length - 1;
+      activeTheme = "全部";
+      currentScores = { ...item.scores };
+      saveWorkbenchState();
+      renderThemes();
+      renderAll();
+      [els.newTicker, els.newName, els.newTheme, els.newNode, els.newDemand, els.newThesis, els.newMap].forEach(input => input.value = "");
+      els.addStatus.textContent = `${ticker} 已加入候选池。`;
+    }
+
     function renderPrompt() {
       const item = candidates[selectedIndex];
       const score = weightedScore(currentScores);
@@ -1750,6 +2130,7 @@
       renderGates();
       renderRisks();
       renderNextActions();
+      renderWorkspace();
       renderPrompt();
     }
 
@@ -1762,6 +2143,9 @@
     });
     document.getElementById("resetBtn").addEventListener("click", () => {
       currentScores = { ...candidates[selectedIndex].scores };
+      stateFor().scores = { ...currentScores };
+      stateFor().savedAt = new Date().toLocaleString("zh-CN");
+      saveWorkbenchState();
       renderAll();
     });
     document.getElementById("briefBtn").addEventListener("click", renderPrompt);
@@ -1776,6 +2160,58 @@
     document.getElementById("tourBtn").addEventListener("click", () => els.tour.classList.add("open"));
     document.getElementById("tourBtnSide").addEventListener("click", () => els.tour.classList.add("open"));
     document.getElementById("closeTour").addEventListener("click", () => els.tour.classList.remove("open"));
+    document.getElementById("addCandidateBtn").addEventListener("click", addCustomCandidate);
+    document.getElementById("addEvidenceBtn").addEventListener("click", () => {
+      const claim = els.evidenceClaim.value.trim();
+      if (!claim) {
+        els.workspaceStatus.textContent = "请先填写证据主张。";
+        return;
+      }
+      const row = [
+        claim,
+        els.evidenceSource.value.trim() || "待补充来源",
+        els.evidenceConfidence.value,
+        els.evidenceGap.value.trim() || "待核验"
+      ];
+      const state = stateFor();
+      state.extraEvidence = [...(state.extraEvidence || []), row];
+      state.savedAt = new Date().toLocaleString("zh-CN");
+      saveWorkbenchState();
+      [els.evidenceClaim, els.evidenceSource, els.evidenceGap].forEach(input => input.value = "");
+      activeTab = "evidence";
+      renderTabs();
+      renderWorkspace();
+      markSaved("证据已添加到当前标的。");
+    });
+    document.getElementById("saveSnapshotBtn").addEventListener("click", () => {
+      const state = stateFor();
+      state.scores = { ...currentScores };
+      state.notes = els.researchNote.value;
+      state.savedAt = new Date().toLocaleString("zh-CN");
+      markSaved(`快照已保存：${state.savedAt}`);
+      renderWorkspace();
+      renderCandidates();
+    });
+    document.getElementById("exportBriefBtn").addEventListener("click", exportBrief);
+    document.getElementById("clearSavedBtn").addEventListener("click", () => {
+      if (!confirm("确认清空你在这个浏览器里自建的标的和保存的研究快照吗？")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      customCandidates = [];
+      candidates.splice(seedCandidates.length);
+      candidateState = {};
+      selectedIndex = 0;
+      activeTheme = "全部";
+      currentScores = { ...stateFor(candidates[0]).scores };
+      renderThemes();
+      renderAll();
+      els.addStatus.textContent = "本地自建内容已清空。";
+    });
+    els.researchNote.addEventListener("input", () => {
+      const state = stateFor();
+      state.notes = els.researchNote.value;
+      state.savedAt = new Date().toLocaleString("zh-CN");
+      markSaved("备注已自动保存。");
+    });
     els.tour.addEventListener("click", event => {
       if (event.target === els.tour) els.tour.classList.remove("open");
     });
