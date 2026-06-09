@@ -916,6 +916,72 @@
       font-weight: 800;
     }
 
+    .brief-list {
+      display: grid;
+      gap: 8px;
+      max-height: 360px;
+      overflow: auto;
+      padding-right: 3px;
+    }
+
+    .brief-card {
+      display: grid;
+      gap: 7px;
+      width: 100%;
+      padding: 10px;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fff;
+    }
+
+    .brief-card.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--green-soft);
+    }
+
+    .brief-card strong {
+      font-size: 13px;
+    }
+
+    .brief-card span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .brief-view {
+      display: grid;
+      gap: 9px;
+      max-height: 340px;
+      overflow: auto;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: #fbfcfd;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .brief-view h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .brief-view h4 {
+      margin: 4px 0 0;
+      font-size: 13px;
+    }
+
+    .brief-view p,
+    .brief-view ul {
+      margin: 0;
+    }
+
+    .brief-view ul {
+      padding-left: 18px;
+    }
+
     .tour {
       position: fixed;
       inset: 0;
@@ -1339,6 +1405,22 @@
 
         <section class="panel">
           <div class="panel-head">
+            <h2>备忘录库</h2>
+            <span class="chip green" id="briefCount">0 篇</span>
+          </div>
+          <div class="panel-body stack">
+            <div class="brief-list" id="briefList"></div>
+            <div class="brief-view" id="briefView"></div>
+            <div class="button-row">
+              <button id="loadBriefBtn" class="primary">载入到研究备注</button>
+              <button id="copyBriefBtn">复制备忘录</button>
+            </div>
+            <div class="notice">备忘录是研究样本，不是投资建议。使用前请继续核验最新公告、财报和反方证据。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
             <h2>下一步动作</h2>
             <span class="mini">按缺口推进</span>
           </div>
@@ -1596,6 +1678,105 @@
     let candidateState = savedWorkbench.candidateState || {};
     const candidates = [...seedCandidates, ...customCandidates];
 
+    const memoLibrary = [
+      {
+        ticker: "MU",
+        title: "Micron：HBM 供给与定价",
+        score: 82,
+        stage: "强咽喉",
+        theme: "HBM / 存储",
+        conclusion: "证据最硬，但不是“小而窄”的紫苏叶，更像中游供给权重。",
+        chain: ["AI GPU/ASIC 需求", "HBM 容量", "DRAM 晶圆与先进封装", "合格 HBM 供应商", "MU HBM 产能"],
+        evidence: ["AI 对 HBM 的需求持续上升", "HBM 供应商集中", "需要继续核验 HBM 收入占比、HBM4 认证和竞品供给扩张"],
+        risks: ["存储行业可能从短缺转向过剩", "SK Hynix、Samsung 的代际节奏可能改变定价权", "周期上行期估值可能先行透支"],
+        next: ["拉最新 10-Q / earnings call", "对比三大 HBM 厂商 2026-2027 capex", "建立 HBM 供需表"]
+      },
+      {
+        ticker: "AVGO",
+        title: "Broadcom：Custom ASIC 与 AI Networking",
+        score: 80,
+        stage: "强咽喉",
+        theme: "Custom ASIC / AI Networking",
+        conclusion: "需求证据很强，但公司体量大，弹性来自订单持续性而非小盘错定价。",
+        chain: ["Hyperscaler AI capex", "定制 AI 加速器", "高速网络与 I/O", "Broadcom XPU / networking IP", "先进制造与封装"],
+        evidence: ["AI semiconductor revenue 增长强", "与 Meta 扩展 MTIA 合作", "需要核验大型客户订单集中度和项目节奏"],
+        risks: ["客户可能多供或内化设计", "价值可能被 foundry / packaging 端截留", "大盘公司不具备小盘紫苏叶弹性"],
+        next: ["跟踪 AI semiconductor revenue guide", "拆 custom ASIC 与 networking 收入", "建客户项目表和量产年份"]
+      },
+      {
+        ticker: "CAMT",
+        title: "Camtek：先进封装检测 / 量测",
+        score: 74,
+        stage: "候选咽喉",
+        theme: "先进封装",
+        conclusion: "好的良率咽喉样本，关键是 HBM/先进封装订单能见度。",
+        chain: ["AI 加速器需求", "HBM / Chiplet 封装", "良率控制", "检测量测设备", "CAMT 工具"],
+        evidence: ["先进封装提高检测需求", "公司暴露在 HBM 和 heterogeneous integration", "需要比较 KLAC / Onto / Nova 等竞品边界"],
+        risks: ["半导体设备订单周期性", "不是唯一检测量测供应商", "先进封装 capex 放缓会影响订单"],
+        next: ["拉 Q1/Q2 2026 电话会", "比较封装检测供应商覆盖", "映射 OSAT/foundry/HBM 扩产"]
+      },
+      {
+        ticker: "MRVL",
+        title: "Marvell：Optical DSP 与 Custom Silicon",
+        score: 73,
+        stage: "候选咽喉",
+        theme: "光互连 / ASIC",
+        conclusion: "AI 数据中心暴露高，但客户集中和自研替代是核心反方。",
+        chain: ["AI factory capex", "Custom XPU / network fabric", "SerDes / DSP / optics", "MRVL silicon", "Foundry / packaging"],
+        evidence: ["FY2026 revenue 由 AI demand 驱动", "data center networking 和 custom silicon 相关性增强", "需要核验 NRE 到量产收入转化"],
+        risks: ["依赖少数大客户和项目节奏", "Broadcom 竞争和客户自研", "不是最窄材料/设备 chokepoint"],
+        next: ["拆 data center revenue", "跟踪 NVLink Fusion / CXL / optics 合作", "核验客户集中度和项目量产节奏"]
+      },
+      {
+        ticker: "COHR",
+        title: "Coherent：光子组件纵深",
+        score: 70,
+        stage: "候选咽喉",
+        theme: "光子 / CPO",
+        conclusion: "受益面广，未必最窄；需要拆出真正稀缺产品线。",
+        chain: ["AI data center capex", "高速网络 / optical interconnect", "transceiver / laser / optical components", "COHR"],
+        evidence: ["AI-related datacenter 和 communications demand 增强", "产品线覆盖激光器、光模块和光网络组件", "需要拆具体稀缺环节占比"],
+        risks: ["光模块和部分器件可能商品化", "业务宽导致咽喉溢价被稀释", "债务和毛利率影响弹性"],
+        next: ["拆 datacenter & communications revenue", "找 laser arrays / CPO / OCS 竞争优势", "对比 Lumentum、Innolight、Eoptolink"]
+      },
+      {
+        ticker: "AXTI",
+        title: "AXT：InP 衬底",
+        score: 68,
+        stage: "候选咽喉",
+        theme: "InP 材料",
+        conclusion: "紫苏叶味道强，但证据、出口许可、收入传导都要硬核核验。",
+        chain: ["AI 网络升级", "光模块 / 激光器 / 硅光子", "InP 器件", "InP 衬底", "AXTI 产能与出口许可"],
+        evidence: ["InP 与高速光通信和激光器相关", "公司披露 compound semiconductor substrates", "需要核验 AI capex 到 AXTI 收入的传导链"],
+        risks: ["传导链不够硬", "出口许可和地缘风险可能限制出货", "客户可能多供或转向替代材料"],
+        next: ["拆 InP revenue 和客户集中度", "查 InP 供应商格局", "映射 CPO/ELS 路线是否必须使用 InP"]
+      },
+      {
+        ticker: "SIVE",
+        title: "Sivers：CPO 外置光源 / DFB 激光阵列",
+        score: 66,
+        stage: "高弹性线索",
+        theme: "CPO / ELS",
+        conclusion: "叙事很贴 CPO 咽喉，最新合作增强可信度，但融资和量产证据仍是关键。",
+        chain: ["AI data center scale-up", "CPO/NPO optical engine", "External light source", "DFB/CW laser arrays", "Sivers photonics"],
+        evidence: ["与 O-Net、Enablence 合作开发外置光源", "年报提到 DFB laser arrays 和 CPO/NPO", "需要区分合作、reference design 与量产收入"],
+        risks: ["合作公告不等于 sole source", "融资和现金跑道风险", "CPO 时间线可能推迟"],
+        next: ["核对合作合同性质", "拉 Q1 2026 report 看现金和订单", "追踪 2026-2027 设计赢单和量产节点"]
+      },
+      {
+        ticker: "NVTS",
+        title: "Navitas：GaN 数据中心功率转换",
+        score: 59,
+        stage: "观察名单",
+        theme: "功率 / 电力",
+        conclusion: "AI 电力主题正确，但数据中心收入兑现和路线竞争仍未闭环。",
+        chain: ["AI rack power density", "800VDC / 高效电源架构", "power conversion", "GaN / SiC devices", "NVTS"],
+        evidence: ["展示 20 kW 800V 到 6V DC-DC power delivery board", "切入 AI 电源叙事", "需要核验客户、设计赢单和收入规模"],
+        risks: ["GaN、SiC、硅 MOSFET 路线竞争", "demo 不等于客户量产", "小盘公司可能需要融资"],
+        next: ["拉最新 10-Q 看现金和客户", "建立 AI rack power tree", "对比 Infineon、ON、Wolfspeed、TI、MPS"]
+      }
+    ];
+
     const gates = [
       "小上游市场能影响大下游资本开支",
       "合格供应商少或认证周期长",
@@ -1609,6 +1790,7 @@
     let selectedIndex = 0;
     let activeTheme = "全部";
     let activeTab = "evidence";
+    let selectedBriefIndex = 0;
     let currentScores = { ...candidates[0].scores };
 
     const els = {
@@ -1653,7 +1835,10 @@
       evidenceSource: document.getElementById("evidenceSource"),
       evidenceConfidence: document.getElementById("evidenceConfidence"),
       evidenceGap: document.getElementById("evidenceGap"),
-      workspaceStatus: document.getElementById("workspaceStatus")
+      workspaceStatus: document.getElementById("workspaceStatus"),
+      briefCount: document.getElementById("briefCount"),
+      briefList: document.getElementById("briefList"),
+      briefView: document.getElementById("briefView")
     };
 
     function escapeHtml(value) {
@@ -2070,6 +2255,72 @@ ${state.notes || "暂无。"}
       markSaved("已导出研究备忘录。");
     }
 
+    function memoMarkdown(memo = memoLibrary[selectedBriefIndex]) {
+      return `# ${memo.ticker} 紫苏叶咽喉备忘录
+
+> 研究样本，不构成投资建议。
+
+## 结论
+- 主题：${memo.theme}
+- 咽喉分：${memo.score}/100
+- 阶段：${memo.stage}
+- 一句话：${memo.conclusion}
+
+## 供应链反推
+${memo.chain.map((node, index) => `${index + 1}. ${node}`).join("\n")}
+
+## 证据快照
+${memo.evidence.map(item => `- ${item}`).join("\n")}
+
+## 反方压力测试
+${memo.risks.map(item => `- ${item}`).join("\n")}
+
+## 下一步核验
+${memo.next.map(item => `- ${item}`).join("\n")}
+`;
+    }
+
+    function renderMemoLibrary() {
+      els.briefCount.textContent = `${memoLibrary.length} 篇`;
+      els.briefList.innerHTML = memoLibrary.map((memo, idx) => `
+        <button class="brief-card ${idx === selectedBriefIndex ? "active" : ""}" data-brief-index="${idx}">
+          <div class="row">
+            <strong>${escapeHtml(memo.ticker)} · ${escapeHtml(memo.title)}</strong>
+            <span class="score-pill">${memo.score}</span>
+          </div>
+          <div class="chips">
+            <span class="chip green">${escapeHtml(memo.theme)}</span>
+            <span class="chip amber">${escapeHtml(memo.stage)}</span>
+          </div>
+          <span>${escapeHtml(memo.conclusion)}</span>
+        </button>
+      `).join("");
+      els.briefList.querySelectorAll(".brief-card").forEach(button => {
+        button.addEventListener("click", () => {
+          selectedBriefIndex = Number(button.dataset.briefIndex);
+          renderMemoLibrary();
+        });
+      });
+      const memo = memoLibrary[selectedBriefIndex];
+      els.briefView.innerHTML = `
+        <h3>${escapeHtml(memo.ticker)} · ${escapeHtml(memo.title)}</h3>
+        <div class="chips">
+          <span class="chip green">${escapeHtml(memo.theme)}</span>
+          <span class="chip amber">${escapeHtml(memo.stage)}</span>
+          <span class="chip">${memo.score}/100</span>
+        </div>
+        <p>${escapeHtml(memo.conclusion)}</p>
+        <h4>供应链反推</h4>
+        <ul>${memo.chain.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        <h4>证据快照</h4>
+        <ul>${memo.evidence.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        <h4>反方压力测试</h4>
+        <ul>${memo.risks.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        <h4>下一步核验</h4>
+        <ul>${memo.next.map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+      `;
+    }
+
     function addCustomCandidate() {
       const ticker = els.newTicker.value.trim().toUpperCase();
       const name = els.newName.value.trim() || ticker;
@@ -2131,6 +2382,7 @@ ${state.notes || "暂无。"}
       renderRisks();
       renderNextActions();
       renderWorkspace();
+      renderMemoLibrary();
       renderPrompt();
     }
 
@@ -2193,6 +2445,30 @@ ${state.notes || "暂无。"}
       renderCandidates();
     });
     document.getElementById("exportBriefBtn").addEventListener("click", exportBrief);
+    document.getElementById("loadBriefBtn").addEventListener("click", () => {
+      const state = stateFor();
+      const memo = memoMarkdown();
+      const divider = state.notes ? "\n\n---\n\n" : "";
+      state.notes = `${state.notes || ""}${divider}${memo}`;
+      state.savedAt = new Date().toLocaleString("zh-CN");
+      saveWorkbenchState();
+      renderWorkspace();
+      markSaved("已把备忘录载入当前研究备注。");
+    });
+    document.getElementById("copyBriefBtn").addEventListener("click", async () => {
+      const text = memoMarkdown();
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        const temp = document.createElement("textarea");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        temp.remove();
+      }
+      els.workspaceStatus.textContent = "备忘录已复制。";
+    });
     document.getElementById("clearSavedBtn").addEventListener("click", () => {
       if (!confirm("确认清空你在这个浏览器里自建的标的和保存的研究快照吗？")) return;
       localStorage.removeItem(STORAGE_KEY);
