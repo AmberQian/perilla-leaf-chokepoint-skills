@@ -1,0 +1,7 @@
+interface:
+  display_name: "紫苏叶咽喉分析师"
+  short_description: "用紫苏叶理论寻找供应链咽喉机会"
+  default_prompt: "使用 $perilla-leaf-chokepoint 分析一个股票代码在 AI 基础设施供应链中的咽喉位置。"
+
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,202 @@
+[
+  {
+    "rank": 1,
+    "name": "aleabito-serenity-skills",
+    "url": "https://github.com/lanfuli/aleabito-serenity-skills",
+    "source": "GitHub / ClaudeAtlas",
+    "category": "直接相关",
+    "fit": "核心参照",
+    "why": "把 @aleabitoreddit 约 11 个月公开内容整理成 Claude/Codex Agent 技能、股票提及档案和仪表盘。",
+    "use": "作为最接近的开源参照，用来学习档案结构、双语提示词、提及追踪和实时仪表盘设计。"
+  },
+  {
+    "rank": 2,
+    "name": "serenity-radar",
+    "url": "https://claudeatlas.com/skills/lanfuli/serenity-radar/",
+    "source": "ClaudeAtlas",
+    "category": "直接相关",
+    "fit": "注意力雷达",
+    "why": "读取 Aleabito 提及档案，输出升温股票、新进入标的、核心高频标的和主题轮动。",
+    "use": "借鉴“先看注意力动量，再用咽喉清单过滤”的产品思路。"
+  },
+  {
+    "rank": 3,
+    "name": "serenity-skill",
+    "url": "https://github.com/muxuuu/serenity-skill",
+    "source": "GitHub",
+    "category": "直接相关",
+    "fit": "同类技能",
+    "why": "受 Serenity 启发的供应链瓶颈股票研究 AI 技能。",
+    "use": "对比清单表达和输出结构，学习包装方式，但不直接复制。"
+  },
+  {
+    "rank": 4,
+    "name": "cc-equity-research",
+    "url": "https://github.com/prof-little-bear/cc-equity-research",
+    "source": "GitHub",
+    "category": "研究技能",
+    "fit": "权益研究套件",
+    "why": "把 Claude Code 变成权益研究智能体，包含分析技能、数据 MCP 和投资者个性化层。",
+    "use": "作为多技能编排参考：咽喉技能 + 估值 + 公告 + 投资论点追踪 + 风险复核。"
+  },
+  {
+    "rank": 5,
+    "name": "OctagonAI skills",
+    "url": "https://github.com/OctagonAI/skills",
+    "source": "GitHub",
+    "category": "研究技能",
+    "fit": "金融技能库",
+    "why": "包含市场数据、财报电话会、SEC 公告、情绪、指引、市值和表现等 Claude 技能。",
+    "use": "可把其中的财报和 SEC 模块接入证据表、稀释分析和催化剂流程。"
+  },
+  {
+    "rank": 6,
+    "name": "LangAlpha",
+    "url": "https://github.com/ginlix-ai/langalpha",
+    "source": "GitHub",
+    "category": "研究工作台",
+    "fit": "完整产品参照",
+    "why": "面向金融的 Claude Code 产品，带预置研究技能、SEC / 市场数据流程、内嵌组件、仪表盘和自动化。",
+    "use": "作为未来“紫苏叶 AI 分析师”网页应用的产品架构灵感。"
+  },
+  {
+    "rank": 7,
+    "name": "FinRobot",
+    "url": "https://github.com/AI4Finance-Foundation/FinRobot",
+    "source": "GitHub",
+    "category": "研究 Agent",
+    "fit": "金融 Agent 平台",
+    "why": "开源金融 AI Agent 平台，覆盖金融分析、报告、预测和风险评估。",
+    "use": "借鉴其 Agent 角色分工：基本面分析师、市场预测、风险复核和报告撰写。"
+  },
+  {
+    "rank": 8,
+    "name": "financial-research-analyst-agent",
+    "url": "https://github.com/gsaini/financial-research-analyst-agent",
+    "source": "GitHub",
+    "category": "研究 Agent",
+    "fit": "多 Agent 模板",
+    "why": "层级式多 Agent 股票分析系统，支持 SEC 文件 / 电话会 RAG、工具、Streamlit UI、API 和 CLI。",
+    "use": "可借鉴其多 Agent 辩论、矛盾检测和研究 UI 架构。"
+  },
+  {
+    "rank": 9,
+    "name": "china-stock-research-skills",
+    "url": "https://github.com/spikeHongg/china-stock-research-skills",
+    "source": "GitHub",
+    "category": "区域研究",
+    "fit": "中文优先输出",
+    "why": "面向 A 股和中国股票研究的开源 Agent 技能，强调中文输出、引用优先和编排式流程。",
+    "use": "当咽喉地图涉及中国供应商、A 股可比公司、稀土或政策风险时很有用。"
+  },
+  {
+    "rank": 10,
+    "name": "OpenBB",
+    "url": "https://github.com/OpenBB-finance/OpenBB",
+    "source": "GitHub",
+    "category": "数据平台",
+    "fit": "市场数据底座",
+    "why": "面向分析师、量化和 AI 智能体的金融数据平台，支持开源数据集成。",
+    "use": "后续可作为价格、基本面、宏观、行业和仪表盘数据层。"
+  },
+  {
+    "rank": 11,
+    "name": "octagon-mcp-server",
+    "url": "https://github.com/OctagonAI/octagon-mcp-server",
+    "source": "GitHub",
+    "category": "MCP 数据",
+    "fit": "智能体数据桥",
+    "why": "为公开公告、财报电话会、财务指标、股票数据、私募市场信息和网页研究提供 MCP 接入。",
+    "use": "当你要做实时智能体流程时，可作为证据采集后端候选。"
+  },
+  {
+    "rank": 12,
+    "name": "Equibles",
+    "url": "https://github.com/daniel3303/Equibles",
+    "source": "GitHub",
+    "category": "MCP 数据",
+    "fit": "本地迷你 Bloomberg",
+    "why": "自托管栈，覆盖 SEC 公告、机构持仓、内部人交易、国会议员交易和做空数据。",
+    "use": "适合本地优先的证据收集、资本结构和持仓变化监控。"
+  },
+  {
+    "rank": 13,
+    "name": "sec-api-python",
+    "url": "https://github.com/SEC-API-io/sec-api-python",
+    "source": "GitHub",
+    "category": "公告文件",
+    "fit": "SEC 数据 SDK",
+    "why": "面向 SEC / EDGAR 公告、内部人交易、13F、XBRL、重大合同和全文检索的 Python SDK。",
+    "use": "用于自动化稀释检查、ATM / shelf 文件、内部人行为和机构轮动。"
+  },
+  {
+    "rank": 14,
+    "name": "stockscope-mcp",
+    "url": "https://github.com/Stewyboy1990/stockscope-mcp",
+    "source": "GitHub",
+    "category": "MCP 数据",
+    "fit": "免费 SEC MCP",
+    "why": "提供财务、公告、比较、内部人交易、价格历史和行业可比公司的 MCP 工具。",
+    "use": "不想用付费数据服务时，可作为轻量本地智能体数据适配器。"
+  },
+  {
+    "rank": 15,
+    "name": "PageIndex",
+    "url": "https://github.com/VectifyAI/PageIndex",
+    "source": "GitHub",
+    "category": "RAG 检索",
+    "fit": "文档证据引擎",
+    "why": "面向长文档的推理式、无向量 RAG，包含金融文档分析场景。",
+    "use": "适合处理 SEC 公告、投资者材料、行业报告和技术论文中的页级证据。"
+  },
+  {
+    "rank": 16,
+    "name": "edgarParser",
+    "url": "https://github.com/rsljr/edgarParser",
+    "source": "GitHub",
+    "category": "公告文件",
+    "fit": "10-K 解析器",
+    "why": "EDGAR 公告解析器，可抽取业务描述、风险因素和 MD&A 章节。",
+    "use": "适合把风险因素和管理层讨论拉入反方观点。"
+  },
+  {
+    "rank": 17,
+    "name": "stockpulse-ai",
+    "url": "https://github.com/amitpatole/stockpulse-ai",
+    "source": "GitHub",
+    "category": "监控告警",
+    "fit": "全天候新闻监控",
+    "why": "AI 驱动的股票新闻监控系统，持续追踪金融新闻和社交来源。",
+    "use": "可借鉴其告警思路，监控稀释、客户赢单、供货协议和资本开支变化。"
+  },
+  {
+    "rank": 18,
+    "name": "stocks-insights-ai-agent",
+    "url": "https://github.com/vinay-gatech/stocks-insights-ai-agent",
+    "source": "GitHub",
+    "category": "RAG 应用",
+    "fit": "新闻与股票 RAG",
+    "why": "使用 LangChain / LangGraph 检索股票数据和新闻的全栈智能体式 RAG 应用。",
+    "use": "用于学习新闻摄取、向量检索失败后转网页搜索的流程。"
+  },
+  {
+    "rank": 19,
+    "name": "Tulip",
+    "url": "https://github.com/Tulip-Dev/tulip",
+    "source": "GitHub",
+    "category": "图谱可视化",
+    "fit": "大型供应链地图",
+    "why": "开源大型图分析、绘制和可视化框架。",
+    "use": "当 Mermaid 图无法承载多层 AI / 半导体供应链地图时，可作为升级方向。"
+  },
+  {
+    "rank": 20,
+    "name": "SkillCheck-Free",
+    "url": "https://github.com/olgasafonova/SkillCheck-Free",
+    "source": "ClaudeAtlas / GitHub",
+    "category": "技能质检",
+    "fit": "Skill 校验",
+    "why": "用于检查 Claude / Codex 风格 Skill 定义是否符合结构和语义规范。",
+    "use": "发布新仓库前用于检查 SKILL.md 是否清晰、可触发、不过度臃肿。"
+  }
+]
